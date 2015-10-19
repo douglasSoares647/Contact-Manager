@@ -20,4 +20,9 @@
         android:title="@string/menu_website">
     </item>
 
+    <item
+        android:id="@+id/context_menu_call"
+        app:showAsAction="always"
+        android:title="@string/lbl_call">
+    </item>
 </menu>

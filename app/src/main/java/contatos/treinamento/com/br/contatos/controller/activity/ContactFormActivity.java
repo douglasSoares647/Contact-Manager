@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -37,8 +38,11 @@ public class ContactFormActivity extends AppCompatActivity {
     private EditText editTextBirth;
     private EditText editTextWebSite;
     private EditText editTextEmail;
+    private EditText editTextDDD;
+
     private EditText editTextTelephone;
     private RatingBar ratingBar;
+    private Toolbar actionBar;
 
 
     private Contact contact;
@@ -52,13 +56,20 @@ public class ContactFormActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_form_contact);
+        bindActionBar();
         initContact();
         bindPhoto();
         bindEditTexts();
-
         bindEditTextBirth();
         bindRatingBar();
 
+    }
+
+    private void bindActionBar() {
+        actionBar = (Toolbar) findViewById(R.id.toolbar_form);
+        actionBar.setTitle(getString(R.string.bar_new_contact));
+
+        setSupportActionBar(actionBar);
     }
 
     private void bindEditTextBirth() {
@@ -68,9 +79,6 @@ public class ContactFormActivity extends AppCompatActivity {
 
 
         editTextBirth.addTextChangedListener(new TextWatcher() {
-            private String current = "";
-            private String ddmmyyyy = "DDMMYYYY";
-            private Calendar cal = Calendar.getInstance();
 
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -79,7 +87,7 @@ public class ContactFormActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                }
+            }
 
 
             @Override
@@ -109,7 +117,7 @@ public class ContactFormActivity extends AppCompatActivity {
         contact.setWebSite(editTextWebSite.getText().toString());
         contact.setBirth(FormHelper.convertStringToDate(editTextBirth.getText().toString()));
         contact.setRating(ratingBar.getRating());
-        contact.setTelephone(editTextTelephone.getText().toString());
+        contact.setTelephone(editTextDDD.getText().toString() + "-" + editTextTelephone.getText().toString());
         contact.setEmail(editTextEmail.getText().toString());
 
     }
@@ -127,11 +135,23 @@ public class ContactFormActivity extends AppCompatActivity {
         editTextWebSite = (EditText) findViewById(R.id.editTextWebSite);
         editTextWebSite.setText(contact.getWebSite() == null ? "" : contact.getWebSite());
 
+        editTextDDD = (EditText) findViewById(R.id.editTextDDD);
+
         editTextTelephone = (EditText) findViewById(R.id.editTextTelephone);
-        editTextTelephone.setText(contact.getTelephone() == null ? "" : contact.getTelephone());
+        if (contact.getTelephone() != null) {
+            String[] telephone = contact.getTelephone().split("-");
+
+            editTextDDD.setText(telephone[0]);
+
+            editTextTelephone.setText(telephone[1]);
+        } else {
+            editTextDDD.setText("");
+            editTextTelephone.setText("");
+        }
 
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextEmail.setText(contact.getEmail() == null ? "" : contact.getEmail());
+
     }
 
     private void bindPhoto() {
@@ -187,10 +207,10 @@ public class ContactFormActivity extends AppCompatActivity {
 
     private void onAcceptMenuClick() {
         bindContact();
-        if (!FormHelper.validateForm(editTextName, editTextTelephone, editTextEmail)) {
+        if (!FormHelper.validateForm(editTextName, editTextDDD, editTextTelephone, editTextEmail)
+                && !FormHelper.validateEmail(editTextEmail)) {
             ContactBusinessService.save(contact);
             finish();
-
         }
     }
 }

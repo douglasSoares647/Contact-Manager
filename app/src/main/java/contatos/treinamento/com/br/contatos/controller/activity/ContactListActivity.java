@@ -4,26 +4,19 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import java.net.ConnectException;
 import java.util.List;
 
 import contatos.treinamento.com.br.contatos.R;
@@ -31,7 +24,6 @@ import contatos.treinamento.com.br.contatos.controller.adapter.ContactListAdapte
 import contatos.treinamento.com.br.contatos.controller.listener.RecyclerItemClickListener;
 import contatos.treinamento.com.br.contatos.model.ContactBusinessService;
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
-import contatos.treinamento.com.br.contatos.model.util.BitmapHelper;
 
 
 public class ContactListActivity extends AppCompatActivity {
@@ -39,13 +31,21 @@ public class ContactListActivity extends AppCompatActivity {
     private RecyclerView contactList;
     private Contact selectedContact;
     private FloatingActionButton fab;
+    private Toolbar actionBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_list);
+        bindActionBar();
         bindContactList();
         bindFloatingActionButton();
 
+    }
+
+    private void bindActionBar() {
+        actionBar = (Toolbar) findViewById(R.id.toolbar);
+        actionBar.setTitle("Contacts");
+        setSupportActionBar(actionBar);
     }
 
     private void bindFloatingActionButton() {
@@ -70,7 +70,12 @@ public class ContactListActivity extends AppCompatActivity {
                 new RecyclerItemClickListener(ContactListActivity.this, contactList, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
+                        ContactListAdapter adapter = (ContactListAdapter) contactList.getAdapter();
+                        selectedContact = adapter.getItem(position);
 
+                        Intent goToContactInfo = new Intent(ContactListActivity.this, ContactInformationActivity.class);
+                        goToContactInfo.putExtra(ContactInformationActivity.PARAM_CONTACTINFO,selectedContact);
+                        startActivity(goToContactInfo);
                     }
 
                     @Override
@@ -114,7 +119,7 @@ public class ContactListActivity extends AppCompatActivity {
 
     private void updateList() {
         List<Contact> contacts = ContactBusinessService.findContacts();
-        contactList.setAdapter(new ContactListAdapter(this,contacts));
+        contactList.setAdapter(new ContactListAdapter(this, contacts));
         ContactListAdapter adapter = (ContactListAdapter) contactList.getAdapter();
         adapter.notifyDataSetChanged();
 
@@ -140,7 +145,16 @@ public class ContactListActivity extends AppCompatActivity {
         else if(id == R.id.context_menu_website)
                 onMenuWebSiteClick();
 
+        else if(id == R.id.context_menu_call)
+                onMenuCallClick();
         return super.onContextItemSelected(item);
+    }
+
+    private void onMenuCallClick() {
+        Intent goToCallActivity = new Intent(Intent.ACTION_CALL);
+        goToCallActivity.setData(Uri.parse("tel:"+selectedContact.getTelephone()));
+
+        startActivity(goToCallActivity);
     }
 
     private void onMenuWebSiteClick() {

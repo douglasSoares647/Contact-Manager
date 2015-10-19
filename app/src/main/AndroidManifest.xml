@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
     <uses-permission android:name="ANDROID.PERMISSION.INTERNET"></uses-permission>
+    <uses-permission android:name="ANDROID.PERMISSION.CALL_PHONE"></uses-permission>
     <application
         android:allowBackup="true"
         android:name=".model.ContactManagerApplication"
@@ -22,6 +23,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".controller.activity.ContactInformationActivity">
+        </activity>
         <activity android:name=".controller.activity.ContactFormActivity"
             android:label="@string/bar_new_contact">
         </activity>

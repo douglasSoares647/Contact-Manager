@@ -69,4 +69,15 @@ public final class FormHelper {
         return birth;
     }
 
+
+    public static boolean validateEmail(EditText editTextEmail){
+        boolean emailIsNotValidated = false;
+        if(!editTextEmail.getText().toString().contains("@")&&!editTextEmail.getText().toString().contains(".com")){
+            editTextEmail.setError("Invalid email format");
+            emailIsNotValidated = true;
+        }
+
+        return emailIsNotValidated;
+    }
+
 }

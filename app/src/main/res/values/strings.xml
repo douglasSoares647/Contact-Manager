@@ -6,18 +6,32 @@
     <string name="lbl_name">Name</string>
     <string name="lbl_birth">Birth (dd/mm/yyyy)</string>
     <string name="lbl_website">Website</string>
+    <string name="lbl_telephone">Telephone</string>
+    <string name="lbl_email">example@example.com</string>
+    <string name="lbl_contact_name_on_dialog">Contact name</string>
+    <string name="lbl_call">Call</string>
+    <string name="lbl_ddd">DDD</string>
+    <string name="lbl_example">example.com</string>
+    <string name="lbl_email_contact_list">Email :</string>
+    <string name="lbl_name_contact_list">Name : </string>
+    <string name="lbl_telephone_contact_list">Telephone :</string>
+
+
     <string name="bar_new_contact">New Contact</string>
     <string name="item_accept">Accept Item</string>
     <string name="item_deny">Deny Item</string>
     <string name="item_add_contact">Add Contact</string>
+
     <string name="menu_edit">Edit</string>
     <string name="menu_delete">Delete</string>
     <string name="menu_website">Go to website</string>
+
     <string name="msg_connection_failed">Connection failed or website does not exist</string>
+
     <string name="dialog_delete">Are you sure you want to delete this item?</string>
     <string name="dialog_no">No</string>
     <string name="dialog_yes">Yes</string>
     <string name="dialog_confirm">Confirm</string>
-    <string name="lbl_telephone">Telephone</string>
-    <string name="lbl_email">Email</string>
+    <string name="lbl_website_contact_list">Website :</string>
+
 </resources>

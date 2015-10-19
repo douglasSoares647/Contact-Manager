@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +20,9 @@ import android.widget.TextView;
 import java.util.List;
 
 import contatos.treinamento.com.br.contatos.R;
+import contatos.treinamento.com.br.contatos.controller.activity.ContactInformationActivity;
+import contatos.treinamento.com.br.contatos.controller.activity.ContactListActivity;
+import contatos.treinamento.com.br.contatos.controller.listener.RecyclerItemClickListener;
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
 import contatos.treinamento.com.br.contatos.model.util.BitmapHelper;
 
@@ -30,7 +34,6 @@ public class ContactListAdapter extends
 
     private List<Contact> contacts;
     private Context context;
-
 
     public ContactListAdapter( Activity context, List<Contact> contacts) {
         this.contacts = contacts;
@@ -52,9 +55,11 @@ public class ContactListAdapter extends
     @Override
     public void onBindViewHolder(ContactListAdapter.ViewHolder viewHolder, int i) {
         final Contact contact = contacts.get(i);
+
+
         viewHolder.itemView.setLongClickable(true);
         TextView textViewName = viewHolder.textViewName;
-        TextView textViewBirth = viewHolder.textViewTelephone;
+        TextView textViewTelephone = viewHolder.textViewTelephone;
         TextView textViewEmail = viewHolder.textViewEmail;
         RatingBar ratingBarItemList = viewHolder.ratingBar;
         ImageView imageViewItemList = viewHolder.photo;
@@ -62,10 +67,12 @@ public class ContactListAdapter extends
         imageViewItemList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Dialog dialog = new Dialog(context);
+                Dialog dialog = new Dialog(context, R.style.CustomDialog);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.contact_image);
                 ImageView imageBigger = (ImageView) dialog.findViewById(R.id.contact_image_bigger);
+                TextView textViewContactNameOnDialog = (TextView) dialog.findViewById(R.id.textViewNameOnDialog);
+                textViewContactNameOnDialog.setText(contact.getName());
                 if (contact.getPhoto() != null)
                     BitmapHelper.loadImageBigger(imageBigger, contact.getPhoto());
                 dialog.setCanceledOnTouchOutside(true);
@@ -79,8 +86,9 @@ public class ContactListAdapter extends
             imageViewItemList.setBackground(null);
         }
 
-        textViewName.setText(contact.getName());
-        textViewBirth.setText(contact.getTelephone());
+        textViewName.append(contact.getName());
+
+        textViewTelephone.setText(contact.getTelephone());
         textViewEmail.setText(contact.getEmail());
         ratingBarItemList.setRating(contact.getRating());
         ratingBarItemList.setIsIndicator(true);
