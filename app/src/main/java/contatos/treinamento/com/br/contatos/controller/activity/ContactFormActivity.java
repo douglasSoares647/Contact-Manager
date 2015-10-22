@@ -1,27 +1,47 @@
 package contatos.treinamento.com.br.contatos.controller.activity;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
+import android.support.v4.app.NavUtils;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.method.KeyListener;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.Spinner;
+import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import contatos.treinamento.com.br.contatos.R;
 import contatos.treinamento.com.br.contatos.model.ContactBusinessService;
@@ -35,11 +55,11 @@ import contatos.treinamento.com.br.contatos.model.util.FormHelper;
 public class ContactFormActivity extends AppCompatActivity {
     private ImageView photo;
     private EditText editTextName;
-    private EditText editTextBirth;
     private EditText editTextWebSite;
     private EditText editTextEmail;
-    private EditText editTextDDD;
-
+    private EditText editTextBirth;
+    private ImageButton btnBirth;
+    private ImageButton btnImportContact;
     private EditText editTextTelephone;
     private RatingBar ratingBar;
     private Toolbar actionBar;
@@ -60,47 +80,65 @@ public class ContactFormActivity extends AppCompatActivity {
         initContact();
         bindPhoto();
         bindEditTexts();
-        bindEditTextBirth();
+        bindBirth();
+        bindBtnImportContact();
+
         bindRatingBar();
 
     }
+
+    private void bindBtnImportContact() {
+        btnImportContact = (ImageButton) findViewById(R.id.imageButtonImportContact);
+        btnImportContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent goToPhoneContacts = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                goToPhoneContacts.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
+                startActivityForResult(goToPhoneContacts, 1);
+            }
+        });
+    }
+
+    private void bindBirth() {
+        editTextBirth = (EditText) findViewById(R.id.editTextBirth);
+        editTextBirth.setText(contact.getBirth() == null ? "" : FormHelper.convertDateToString(contact.getBirth()));
+
+        btnBirth = (ImageButton) findViewById(R.id.btnBirth);
+        btnBirth.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            final Calendar calendar = Calendar.getInstance();
+                                            calendar.setTimeInMillis(System.currentTimeMillis());
+                                            int day = calendar.get(Calendar.DAY_OF_MONTH);
+                                            int month = calendar.get(Calendar.MONTH);
+                                            int year = calendar.get(Calendar.YEAR);
+
+
+                                            DatePickerDialog datePicker = new DatePickerDialog(ContactFormActivity.this, new DatePickerDialog.OnDateSetListener() {
+                                                @Override
+                                                public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+                                                    editTextBirth.setText(String.valueOf(dayOfMonth) + "/" +
+                                                            (monthOfYear + 1 < 10 ? "0" + String.valueOf(monthOfYear + 1) : String.valueOf(monthOfYear + 1)) +
+                                                            "/" + String.valueOf(year));
+                                                }
+                                            }, day, month + 1, year);
+                                            datePicker.setCanceledOnTouchOutside(true);
+                                            datePicker.getDatePicker().setMaxDate(new Date().getTime());
+                                            datePicker.show();
+                                        }
+                                    }
+        );
+    }
+
 
     private void bindActionBar() {
         actionBar = (Toolbar) findViewById(R.id.toolbar_form);
         actionBar.setTitle(getString(R.string.bar_new_contact));
 
         setSupportActionBar(actionBar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void bindEditTextBirth() {
-        editTextBirth = (EditText) findViewById(R.id.editTextBirth);
-        String birth = FormHelper.convertDateToString(contact.getBirth());
-        editTextBirth.setText(birth == null ? "" : birth);
-
-
-        editTextBirth.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-            }
-
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if ((editTextBirth.getText().length() == 2 || editTextBirth.getText().length() == 5)) {
-                    editTextBirth.append("/");
-                    editTextBirth.setSelection(editTextBirth.getText().length());
-                }
-
-            }
-        });
-
-    }
 
     private void initContact() {
         Bundle values = getIntent().getExtras();
@@ -117,7 +155,7 @@ public class ContactFormActivity extends AppCompatActivity {
         contact.setWebSite(editTextWebSite.getText().toString());
         contact.setBirth(FormHelper.convertStringToDate(editTextBirth.getText().toString()));
         contact.setRating(ratingBar.getRating());
-        contact.setTelephone(editTextDDD.getText().toString() + "-" + editTextTelephone.getText().toString());
+        contact.setTelephone(editTextTelephone.getText().toString());
         contact.setEmail(editTextEmail.getText().toString());
 
     }
@@ -135,19 +173,8 @@ public class ContactFormActivity extends AppCompatActivity {
         editTextWebSite = (EditText) findViewById(R.id.editTextWebSite);
         editTextWebSite.setText(contact.getWebSite() == null ? "" : contact.getWebSite());
 
-        editTextDDD = (EditText) findViewById(R.id.editTextDDD);
-
         editTextTelephone = (EditText) findViewById(R.id.editTextTelephone);
-        if (contact.getTelephone() != null) {
-            String[] telephone = contact.getTelephone().split("-");
-
-            editTextDDD.setText(telephone[0]);
-
-            editTextTelephone.setText(telephone[1]);
-        } else {
-            editTextDDD.setText("");
-            editTextTelephone.setText("");
-        }
+        editTextTelephone.setText(contact.getTelephone() == null ? "" : contact.getTelephone());
 
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextEmail.setText(contact.getEmail() == null ? "" : contact.getEmail());
@@ -180,9 +207,44 @@ public class ContactFormActivity extends AppCompatActivity {
         if (requestCode == 10) {
             if (resultCode == Activity.RESULT_OK) {
                 contact.setPhoto(path);
-                BitmapHelper.loadImage(photo, path);
+                Glide.with(this).load(path).asBitmap().centerCrop().into(new BitmapImageViewTarget(photo) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        Context context = ContactFormActivity.this;
+                        RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(context.getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        photo.setImageDrawable(circularBitmapDrawable);
+                    }
+                });
+
             } else {
                 path = null;
+            }
+        } else if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                try {
+                    Uri contactData = data.getData();
+
+                    String[] columns = {ContactsContract.CommonDataKinds.Identity.DISPLAY_NAME,
+                            ContactsContract.CommonDataKinds.Phone.NUMBER,
+                            ContactsContract.CommonDataKinds.Email.DATA,
+                            ContactsContract.CommonDataKinds.Website.DATA,
+                            ContactsContract.CommonDataKinds.Photo.PHOTO};
+
+
+                    Cursor cursor = getContentResolver().query(contactData, columns, null, null, null);
+
+                    if (cursor.moveToNext()) {
+                        editTextName.setText(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Identity.DISPLAY_NAME)));
+                        editTextTelephone.setText(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                       // contact.setPhoto(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Photo.PHOTO_THUMBNAIL_URI)));
+                       // Glide.with(this).load(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Photo.PHOTO))).centerCrop().fitCenter().into(photo);
+                    }
+                    cursor.close();
+
+                } catch (Exception e) {
+                    Toast.makeText(this, "Contact was not imported!", Toast.LENGTH_LONG).show();
+                }
             }
         }
     }
@@ -200,6 +262,10 @@ public class ContactFormActivity extends AppCompatActivity {
         switch (idItem) {
             case R.id.item_accept:
                 onAcceptMenuClick();
+                break;
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -207,7 +273,7 @@ public class ContactFormActivity extends AppCompatActivity {
 
     private void onAcceptMenuClick() {
         bindContact();
-        if (!FormHelper.validateForm(editTextName, editTextDDD, editTextTelephone, editTextEmail)
+        if (!FormHelper.validateForm(editTextName, editTextTelephone, editTextEmail)
                 && !FormHelper.validateEmail(editTextEmail)) {
             ContactBusinessService.save(contact);
             finish();

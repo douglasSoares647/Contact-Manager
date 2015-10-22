@@ -3,9 +3,12 @@ package contatos.treinamento.com.br.contatos.controller.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,8 +18,12 @@ import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.Date;
 import java.util.List;
 
 import contatos.treinamento.com.br.contatos.R;
@@ -32,6 +39,7 @@ public class ContactListActivity extends AppCompatActivity {
     private Contact selectedContact;
     private FloatingActionButton fab;
     private Toolbar actionBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +48,10 @@ public class ContactListActivity extends AppCompatActivity {
         bindContactList();
         bindFloatingActionButton();
 
+
     }
+
+
 
     private void bindActionBar() {
         actionBar = (Toolbar) findViewById(R.id.toolbar);
@@ -74,7 +85,7 @@ public class ContactListActivity extends AppCompatActivity {
                         selectedContact = adapter.getItem(position);
 
                         Intent goToContactInfo = new Intent(ContactListActivity.this, ContactInformationActivity.class);
-                        goToContactInfo.putExtra(ContactInformationActivity.PARAM_CONTACTINFO,selectedContact);
+                        goToContactInfo.putExtra(ContactInformationActivity.PARAM_CONTACTINFO, selectedContact);
                         startActivity(goToContactInfo);
                     }
 
@@ -98,16 +109,16 @@ public class ContactListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.item_add_contact) {
-            onMenuAddContactClick();
+        if (id == R.id.item_search) {
+            onMenuSearchClick();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void onMenuAddContactClick() {
-        Intent goToContactForm = new Intent(this, ContactFormActivity.class);
-        startActivity(goToContactForm);
+    private void onMenuSearchClick() {
+        Intent goToSearchForm = new Intent(ContactListActivity.this, ContactSearchActivity.class);
+        startActivity(goToSearchForm);
     }
 
     @Override
@@ -119,6 +130,10 @@ public class ContactListActivity extends AppCompatActivity {
 
     private void updateList() {
         List<Contact> contacts = ContactBusinessService.findContacts();
+
+        for(Contact c : contacts){
+            if(c.getBirth().getTime()== new Date().getTime());
+        }
         contactList.setAdapter(new ContactListAdapter(this, contacts));
         ContactListAdapter adapter = (ContactListAdapter) contactList.getAdapter();
         adapter.notifyDataSetChanged();
@@ -192,4 +207,5 @@ public class ContactListActivity extends AppCompatActivity {
         goToContactForm.putExtra(ContactFormActivity.PARAM_CONTACT, selectedContact);
         startActivity(goToContactForm);
     }
+
 }
