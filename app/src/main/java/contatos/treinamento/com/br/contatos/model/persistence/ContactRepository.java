@@ -3,6 +3,7 @@ package contatos.treinamento.com.br.contatos.model.persistence;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.provider.ContactsContract;
 
 import java.io.File;
@@ -62,4 +63,21 @@ public final class ContactRepository {
         db.close();
         databaseHelper.close();
     }
+
+
+    public static List<Contact> findContactsByName(String name) {
+        DatabaseHelper databaseHelper = DatabaseHelper.getInstance();
+        SQLiteDatabase db = databaseHelper.getReadableDatabase();
+
+        String where = ContactContract.NAME + " like '" + name + "%'";
+        Cursor cursor = db.query(ContactContract.TABLE,ContactContract.columns,where,null,null,null,ContactContract.NAME);
+        List<Contact> contacts = ContactContract.getContacts(cursor);
+
+        db.close();
+        databaseHelper.close();
+
+        return contacts;
+    }
+
+
 }

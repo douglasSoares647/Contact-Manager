@@ -60,19 +60,14 @@ public final class FormHelper {
         return notValidated;
     }
 
-
-    public static String validateBirth(String birth){
-
-        if(birth.length()==2||birth.length()==5){
-            birth = birth+"/";
-        }
-        return birth;
-    }
-
-
     public static boolean validateEmail(EditText editTextEmail){
         boolean emailIsNotValidated = false;
-        if(!editTextEmail.getText().toString().contains("@")&&!editTextEmail.getText().toString().contains(".com")){
+        String email = editTextEmail.getText().toString();
+        if(!email.contains("@")){
+            editTextEmail.setError("Invalid email format");
+            emailIsNotValidated = true;
+        }
+        if(!email.contains(".com")){
             editTextEmail.setError("Invalid email format");
             emailIsNotValidated = true;
         }

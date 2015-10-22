@@ -1,5 +1,7 @@
 package contatos.treinamento.com.br.contatos.model;
 
+import android.net.Uri;
+
 import java.util.List;
 
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
@@ -24,5 +26,10 @@ public final class ContactBusinessService {
     public static void delete(Contact contact) {
         ContactRepository.delete(contact);
     }
+
+    public static List<Contact> findContactsByName(String name){
+       return ContactRepository.findContactsByName(name);
+    }
+
 
 }

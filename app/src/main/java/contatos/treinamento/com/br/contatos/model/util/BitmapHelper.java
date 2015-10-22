@@ -21,16 +21,8 @@ public final class BitmapHelper {
         Bitmap bitmap = BitmapFactory.decodeFile(path);
         Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 75, 75, true);
         photo.setImageBitmap(getCircleBitmap(scaledBitmap));
-        photo.setRotation(270);
+        photo.setRotation(90);
     }
-
-    public static void loadImageBigger(ImageView photo, String path) {
-        Bitmap bitmap = BitmapFactory.decodeFile(path);
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
-        photo.setImageBitmap(scaledBitmap);
-        photo.setRotation(270);
-    }
-
 
     public static Bitmap getCircleBitmap(Bitmap bitmap) {
         final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),

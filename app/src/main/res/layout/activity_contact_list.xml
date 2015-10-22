@@ -28,7 +28,7 @@
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
         android:src="@mipmap/ic_icon_add"
-        app:elevation="9dp"
+        app:elevation="7dp"
         app:pressedTranslationZ="12dp"
         app:borderWidth="0dp"/>
 

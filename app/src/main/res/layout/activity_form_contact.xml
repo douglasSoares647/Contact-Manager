@@ -1,97 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <include
-        android:id="@+id/toolbar_form"
-        layout="@layout/toolbar"></include>
-
-    <ImageView
-        android:id="@+id/imageViewContact"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="12dp"
-
-        android:background="@mipmap/ic_default_contact" />
-
-
-    <EditText
-        android:id="@+id/editTextName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:hint="@string/lbl_name"
-        android:lines="1"></EditText>
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/editTextDDD"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:hint="@string/lbl_ddd"
-            android:inputType="phone"
-            android:maxLines="1"
-            android:maxLength="2"/>
+        <include
+            android:id="@+id/toolbar_form"
+            layout="@layout/toolbar"></include>
+
+        <ImageView
+            android:id="@+id/imageViewContact"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="12dp"
+
+            android:background="@mipmap/ic_default_contact" />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/editTextName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:hint="@string/lbl_name"
+                android:inputType="textCapSentences|textPersonName"
+                android:maxLines="1"></EditText>
+
+            <ImageButton
+                android:id="@+id/imageButtonImportContact"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/editTextName"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:src="@mipmap/ic_action_social_person_add" />
+        </RelativeLayout>
+
 
         <EditText
             android:id="@+id/editTextTelephone"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:layout_weight="7"
             android:hint="@string/lbl_telephone"
             android:inputType="phone"
+            android:maxLines="1" />
+
+
+        <EditText
+            android:id="@+id/editTextEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:hint="@string/lbl_email"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"></EditText>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/editTextBirth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:hint="@string/lbl_birth"
+                android:textSize="20dp" />
+
+
+            <ImageButton
+                android:id="@+id/btnBirth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_margin="5dp"
+                android:src="@mipmap/ic_action_notification_event_available" />
+        </RelativeLayout>
+
+
+        <EditText
+            android:id="@+id/editTextWebSite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:hint="@string/lbl_website"
+            android:inputType="textWebEditText"
             android:lines="1" />
 
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="25dp"
+            android:layout_marginTop="25dp"
+            android:numStars="5" />
+
     </LinearLayout>
-
-
-    <EditText
-        android:id="@+id/editTextEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:hint="@string/lbl_email"
-        android:inputType="textEmailAddress"
-        android:maxLines="1"></EditText>
-
-
-    <EditText
-        android:id="@+id/editTextBirth"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:hint="@string/lbl_birth"
-        android:inputType="date"
-        android:lines="1"
-        android:maxLength="10"></EditText>
-
-    <EditText
-        android:id="@+id/editTextWebSite"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:hint="@string/lbl_website"
-        android:inputType="textWebEditText"
-        android:lines="1" />
-
-
-    <RatingBar
-        android:id="@+id/ratingBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="25dp"
-        android:layout_marginTop="25dp"
-        android:numStars="5" />
-
-
-</LinearLayout>
+</ScrollView>

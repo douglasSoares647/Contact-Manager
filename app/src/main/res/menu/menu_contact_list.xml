@@ -3,8 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".ContactList">
 
 
-    <item android:id="@+id/item_add_contact"
-        android:title="@string/item_add_contact"
+    <item android:id="@+id/item_search"
+        android:title="@string/menu_item_search"
         app:showAsAction="always"
-        android:icon="@mipmap/ic_action_social_person_add"/>
+        android:icon="@mipmap/ic_action_search"/>
+
 </menu>

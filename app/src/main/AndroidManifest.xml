@@ -2,17 +2,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="contatos.treinamento.com.br.contatos" >
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
-    <uses-permission android:name="ANDROID.PERMISSION.INTERNET"></uses-permission>
-    <uses-permission android:name="ANDROID.PERMISSION.CALL_PHONE"></uses-permission>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="ANDROID.PERMISSION.INTERNET" />
+    <uses-permission android:name="ANDROID.PERMISSION.CALL_PHONE" />
+
     <application
-        android:allowBackup="true"
         android:name=".model.ContactManagerApplication"
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        >
+        android:theme="@style/AppTheme" >
         <activity
             android:name=".controller.activity.ContactListActivity"
             android:label="@string/app_name" >
@@ -22,11 +22,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".controller.activity.ContactInformationActivity">
+        <activity
+            android:name=".controller.activity.ContactInformationActivity"
+            android:parentActivityName=".controller.activity.ContactListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".controller.activity.ContactListActivity" />
         </activity>
-        <activity android:name=".controller.activity.ContactFormActivity"
-            android:label="@string/bar_new_contact">
+        <activity
+            android:name=".controller.activity.ContactFormActivity"
+            android:label="@string/bar_new_contact"
+            android:parentActivityName=".controller.activity.ContactListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".controller.activity.ContactListActivity" />
+        </activity>
+        <activity
+            android:name=".controller.activity.ContactSearchActivity"
+            android:parentActivityName=".controller.activity.ContactListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".controller.activity.ContactListActivity" />
         </activity>
     </application>
 

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Contatos</string>
+    <string name="app_name">Contacts</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -33,5 +33,36 @@
     <string name="dialog_yes">Yes</string>
     <string name="dialog_confirm">Confirm</string>
     <string name="lbl_website_contact_list">Website :</string>
+    <string name="menu_item_search">Search</string>
+    <string name="lbl_find_contacs">Find contacts</string>
+    <string name="drawer_close">Close</string>
+    <string name="drawer_open">Open</string>
+
+
+    <string-array name="arrayMonth">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+
+
+    </string-array>
+    <string name="title_activity_navigation_drawer">NavigationDrawerActivity</string>
+
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">Example action</string>
 
 </resources>
