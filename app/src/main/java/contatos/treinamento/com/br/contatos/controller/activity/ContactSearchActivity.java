@@ -10,15 +10,19 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import contatos.treinamento.com.br.contatos.R;
 import contatos.treinamento.com.br.contatos.controller.adapter.ContactListAdapter;
+import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncInterface;
+import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncLoadList;
 import contatos.treinamento.com.br.contatos.controller.listener.RecyclerItemClickListener;
 import contatos.treinamento.com.br.contatos.model.ContactBusinessService;
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
@@ -26,12 +30,13 @@ import contatos.treinamento.com.br.contatos.model.entity.Contact;
 /**
  * Created by c1284521 on 20/10/2015.
  */
-public class ContactSearchActivity extends AppCompatActivity {
+public class ContactSearchActivity extends AppCompatActivity implements AsyncInterface {
 
     private RecyclerView contactList;
     private Toolbar actionBar;
 
     private Contact selectedContact;
+    private List<Contact> contacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +45,10 @@ public class ContactSearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search_contact);
         bindContactList();
         bindActionBar();
+
+
+        AsyncLoadList asyncLoadList = new AsyncLoadList(this,this);
+        asyncLoadList.execute();
     }
 
     @Override
@@ -58,6 +67,20 @@ public class ContactSearchActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        getMenuInflater().inflate(R.menu.context_menu_contact_list,menu);
+        super.onCreateContextMenu(menu, v, menuInfo);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+
+        return super.onContextItemSelected(item);
     }
 
     private void bindActionBar() {
@@ -79,8 +102,8 @@ public class ContactSearchActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(editTextSearch.getText().toString().equals("")){
-                    updateList();
+                if (editTextSearch.getText().toString().equals("")) {
+                    refreshList(contacts);
                 }
             }
         });
@@ -90,7 +113,6 @@ public class ContactSearchActivity extends AppCompatActivity {
     private void bindContactList() {
 
         contactList = (RecyclerView) findViewById(R.id.listViewContactsFound);
-
         registerForContextMenu(contactList);
         contactList.setLayoutManager(new LinearLayoutManager(this));
         contactList.setItemAnimator(new DefaultItemAnimator());
@@ -119,20 +141,25 @@ public class ContactSearchActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onResume() {
-        updateList();
-        super.onResume();
+    private void updateListByName(String name){
+        List<Contact> contactsByName = new ArrayList<>();
+        for(Contact contact : contacts) {
+            if (contact.getName().toString().toLowerCase().startsWith(name.toLowerCase())) {
+                contactsByName.add(contact);
+            }
+        }
+        setAdapter(contactsByName);
     }
 
-    private void updateListByName(String name){
-        List<Contact> contacts = ContactBusinessService.findContactsByName(name);
-        contactList.setAdapter(new ContactListAdapter(this, contacts));
-        ContactListAdapter adapter = (ContactListAdapter) contactList.getAdapter();
-        adapter.notifyDataSetChanged();
+
+    @Override
+    public void refreshList(List<Contact> contacts) {
+        this.contacts = contacts;
+        setAdapter(this.contacts);
     }
-    private void updateList() {
-        List<Contact> contacts = ContactBusinessService.findContacts();
+
+
+    public void setAdapter(List<Contact>contacts){
         contactList.setAdapter(new ContactListAdapter(this, contacts));
         ContactListAdapter adapter = (ContactListAdapter) contactList.getAdapter();
         adapter.notifyDataSetChanged();

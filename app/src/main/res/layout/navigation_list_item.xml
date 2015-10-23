@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/imageViewNavigationItem"
+        android:layout_width="27dp"
+        android:layout_height="27dp"
+        android:src="@drawable/ic_drawer"
+        android:layout_marginLeft="28dp"
+        android:layout_marginStart="28dp"
+        android:layout_alignBottom="@+id/textViewNavigationItem"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/textViewNavigationItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:text="OIOII"
+        android:layout_marginTop="39dp"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/imageViewNavigationItem"
+        android:layout_toEndOf="@+id/imageViewNavigationItem"
+        android:layout_marginLeft="30dp"
+        android:layout_marginStart="51dp" />
+
+</RelativeLayout>

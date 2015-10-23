@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.ContactsContract;
@@ -44,6 +45,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import contatos.treinamento.com.br.contatos.R;
+import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncSave;
 import contatos.treinamento.com.br.contatos.model.ContactBusinessService;
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
 import contatos.treinamento.com.br.contatos.model.util.BitmapHelper;
@@ -237,8 +239,8 @@ public class ContactFormActivity extends AppCompatActivity {
                     if (cursor.moveToNext()) {
                         editTextName.setText(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Identity.DISPLAY_NAME)));
                         editTextTelephone.setText(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-                       // contact.setPhoto(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Photo.PHOTO_THUMBNAIL_URI)));
-                       // Glide.with(this).load(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Photo.PHOTO))).centerCrop().fitCenter().into(photo);
+                        // contact.setPhoto(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Photo.PHOTO_THUMBNAIL_URI)));
+                        // Glide.with(this).load(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Photo.PHOTO))).centerCrop().fitCenter().into(photo);
                     }
                     cursor.close();
 
@@ -275,8 +277,9 @@ public class ContactFormActivity extends AppCompatActivity {
         bindContact();
         if (!FormHelper.validateForm(editTextName, editTextTelephone, editTextEmail)
                 && !FormHelper.validateEmail(editTextEmail)) {
-            ContactBusinessService.save(contact);
-            finish();
+            AsyncSave asyncSave = new AsyncSave(this);
+            asyncSave.execute(contact);
         }
     }
 }
+

@@ -64,5 +64,9 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_example">Example action</string>
+    <string name="navigation_birthdays">Birthdays</string>
+    <string name="dialog_saving_database">Saving on database</string>
+    <string name="dialog_wait">Wait</string>
+    <string name="dialog_load">Loading contact list</string>
 
 </resources>
