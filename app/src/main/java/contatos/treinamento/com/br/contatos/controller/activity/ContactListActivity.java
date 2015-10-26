@@ -8,8 +8,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -20,13 +20,10 @@ import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import contatos.treinamento.com.br.contatos.R;
@@ -171,15 +168,14 @@ public class ContactListActivity extends AppCompatActivity implements AsyncInter
     }
 
     private void onMenuSearchClick() {
-        Intent goToSearchForm = new Intent(ContactListActivity.this, ContactSearchActivity.class);
+       Intent goToSearchForm = new Intent(ContactListActivity.this, ContactSearchActivity.class);
         startActivity(goToSearchForm);
     }
 
     @Override
     protected void onResume() {
-            AsyncLoadList asyncLoadList = new AsyncLoadList(this, this);
-            asyncLoadList.execute();
-
+        AsyncLoadList asyncLoadList = new AsyncLoadList(this, this);
+        asyncLoadList.execute();
         super.onResume();
     }
 
@@ -279,4 +275,5 @@ public class ContactListActivity extends AppCompatActivity implements AsyncInter
         ContactListAdapter adapter = (ContactListAdapter) contactList.getAdapter();
         adapter.notifyDataSetChanged();
     }
+
 }

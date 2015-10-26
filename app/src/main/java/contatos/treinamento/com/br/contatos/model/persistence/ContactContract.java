@@ -83,4 +83,27 @@ public final class ContactContract {
         }
         return null;
     }
+
+    public static boolean verifyEmailAlreadyRegistered(Cursor cursor, Long id) {
+        if(cursor.moveToNext()){
+            Long idContato = cursor.getLong(cursor.getColumnIndex(ContactContract.ID));
+            if(!(idContato==id)){
+                return true;
+            }
+
+        }
+
+        return false;
+    }
+
+    public static boolean verifyNameAlreadyRegistered(Cursor cursor, Long id) {
+        if(cursor.moveToNext()){
+            Long idContacto = cursor.getLong(cursor.getColumnIndex(ContactContract.ID));
+
+            if(!(idContacto==id)){
+                return true;
+            }
+        }
+        return false;
+    }
 }

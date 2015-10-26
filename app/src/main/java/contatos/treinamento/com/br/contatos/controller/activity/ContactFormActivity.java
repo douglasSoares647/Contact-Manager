@@ -40,6 +40,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import java.io.File;
+import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -91,6 +92,7 @@ public class ContactFormActivity extends AppCompatActivity {
 
     private void bindBtnImportContact() {
         btnImportContact = (ImageButton) findViewById(R.id.imageButtonImportContact);
+        btnImportContact.setColorFilter(getResources().getColor(R.color.colorPrimary));
         btnImportContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,8 +106,11 @@ public class ContactFormActivity extends AppCompatActivity {
     private void bindBirth() {
         editTextBirth = (EditText) findViewById(R.id.editTextBirth);
         editTextBirth.setText(contact.getBirth() == null ? "" : FormHelper.convertDateToString(contact.getBirth()));
-
+        editTextBirth.setFocusable(false);
+        editTextBirth.setClickable(false);
+        editTextBirth.setLongClickable(false);
         btnBirth = (ImageButton) findViewById(R.id.btnBirth);
+        btnBirth .setColorFilter(getResources().getColor(R.color.colorPrimary));
         btnBirth.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
@@ -186,7 +191,7 @@ public class ContactFormActivity extends AppCompatActivity {
     private void bindPhoto() {
         photo = (ImageView) findViewById(R.id.imageViewContact);
         if (contact.getPhoto() != null)
-            BitmapHelper.loadImage(photo, contact.getPhoto());
+            loadImage(contact.getPhoto());
 
         photo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,15 +214,7 @@ public class ContactFormActivity extends AppCompatActivity {
         if (requestCode == 10) {
             if (resultCode == Activity.RESULT_OK) {
                 contact.setPhoto(path);
-                Glide.with(this).load(path).asBitmap().centerCrop().into(new BitmapImageViewTarget(photo) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        Context context = ContactFormActivity.this;
-                        RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(context.getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        photo.setImageDrawable(circularBitmapDrawable);
-                    }
-                });
+                loadImage(path);
 
             } else {
                 path = null;
@@ -251,6 +248,18 @@ public class ContactFormActivity extends AppCompatActivity {
         }
     }
 
+    private void loadImage(String image) {
+        Glide.with(this).load(image).asBitmap().centerCrop().into(new BitmapImageViewTarget(photo) {
+            @Override
+            protected void setResource(Bitmap resource) {
+                Context context = ContactFormActivity.this;
+                RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(context.getResources(), resource);
+                circularBitmapDrawable.setCircular(true);
+                photo.setImageDrawable(circularBitmapDrawable);
+            }
+        });
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_form, menu);
@@ -275,11 +284,17 @@ public class ContactFormActivity extends AppCompatActivity {
 
     private void onAcceptMenuClick() {
         bindContact();
-        if (!FormHelper.validateForm(editTextName, editTextTelephone, editTextEmail)
-                && !FormHelper.validateEmail(editTextEmail)) {
+        if (!FormHelper.validateForm(editTextName, editTextTelephone, editTextEmail) &&
+                !FormHelper.validateEmail(editTextEmail,contact.getId()) && !FormHelper.validateName(editTextName,contact.getId())) {
             AsyncSave asyncSave = new AsyncSave(this);
             asyncSave.execute(contact);
+
+            Intent sendContactInfoToPreviousActivity = new Intent(this,ContactInformationActivity.class);
+            sendContactInfoToPreviousActivity.putExtra(ContactInformationActivity.PARAM_CONTACTINFO,contact);
+            setResult(RESULT_OK,sendContactInfoToPreviousActivity);
+            finish();
         }
+
     }
 }
 

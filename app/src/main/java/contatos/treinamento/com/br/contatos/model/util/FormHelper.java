@@ -14,6 +14,8 @@ import android.widget.EditText;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import contatos.treinamento.com.br.contatos.model.ContactBusinessService;
+
 /**
  * Created by c1284521 on 14/10/2015.
  */
@@ -60,7 +62,7 @@ public final class FormHelper {
         return notValidated;
     }
 
-    public static boolean validateEmail(EditText editTextEmail){
+    public static boolean validateEmail(EditText editTextEmail, Long id){
         boolean emailIsNotValidated = false;
         String email = editTextEmail.getText().toString();
         if(!email.contains("@")){
@@ -72,7 +74,28 @@ public final class FormHelper {
             emailIsNotValidated = true;
         }
 
+        if(ContactBusinessService.isEmailAlreadyRegistered(email,id)){
+            editTextEmail.setError("Email already registered");
+            emailIsNotValidated=true;
+        }
+
         return emailIsNotValidated;
     }
+
+    public static boolean validateName(EditText editTextName, Long id){
+        boolean isNameValidated = false;
+        String name = editTextName.getText().toString();
+        if(ContactBusinessService.isNameAlreadyRegistered(name,id)){
+            editTextName.setError("Name already registered");
+            isNameValidated = true;
+        }
+
+        return isNameValidated;
+
+
+    }
+
+
+
 
 }

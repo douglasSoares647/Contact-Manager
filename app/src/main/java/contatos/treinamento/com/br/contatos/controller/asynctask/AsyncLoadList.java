@@ -14,7 +14,7 @@ import contatos.treinamento.com.br.contatos.model.entity.Contact;
 /**
  * Created by c1284521 on 23/10/2015.
  */
-public class AsyncLoadList extends AsyncTask <Void,Void,List<Contact>>{
+public class AsyncLoadList extends AsyncTask <Void,Integer,List<Contact>>{
 
     private AsyncInterface activity;
     private Activity context;
@@ -36,7 +36,8 @@ public class AsyncLoadList extends AsyncTask <Void,Void,List<Contact>>{
 
     @Override
     protected List<Contact> doInBackground(Void... voids) {
-        return ContactBusinessService.findContacts();
+        List<Contact> contacts = ContactBusinessService.findContacts();
+        return contacts;
     }
 
     @Override
@@ -44,5 +45,11 @@ public class AsyncLoadList extends AsyncTask <Void,Void,List<Contact>>{
         activity.refreshList(contacts);
         pg.dismiss();
         super.onPostExecute(contacts);
+    }
+
+
+    @Override
+    protected void onProgressUpdate(Integer... values) {
+        super.onProgressUpdate(values);
     }
 }

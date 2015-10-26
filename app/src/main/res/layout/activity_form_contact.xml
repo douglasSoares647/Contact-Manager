@@ -42,6 +42,8 @@
                 android:layout_alignBottom="@+id/editTextName"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
+                android:layout_margin="5dp"
+                android:background="#0000"
                 android:src="@mipmap/ic_action_social_person_add" />
         </RelativeLayout>
 
@@ -76,6 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:hint="@string/lbl_birth"
+                android:maxLines="1"
                 android:textSize="20dp" />
 
 
@@ -83,9 +86,11 @@
                 android:id="@+id/btnBirth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/editTextBirth"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
                 android:layout_margin="5dp"
+                android:background="#0000"
                 android:src="@mipmap/ic_action_notification_event_available" />
         </RelativeLayout>
 

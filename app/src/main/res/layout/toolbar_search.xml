@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     android:background="@color/colorActionBarSearch"
     app:theme="@style/ThemeOverlay.AppCompat.Light"
-    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+    android:elevation="7dp">
 
     <EditText
         android:layout_width="match_parent"

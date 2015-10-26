@@ -80,4 +80,30 @@ public final class ContactRepository {
     }
 
 
+    public static boolean isEmailAlreadyRegistered(String email, Long id) {
+        DatabaseHelper databaseHelper = DatabaseHelper.getInstance();
+        SQLiteDatabase db  = databaseHelper.getReadableDatabase();
+
+        String where =  ContactContract.EMAIL+ " like '" + email + "'";
+        String[] columns =  {ContactContract.EMAIL,ContactContract.ID};
+        Cursor cursor = db.query(ContactContract.TABLE, columns, where, null, null, null, null);
+
+        boolean isEmailAlreadyRegistered = ContactContract.verifyEmailAlreadyRegistered(cursor, id);
+
+        return isEmailAlreadyRegistered;
+    }
+
+    public static boolean isNameAlreadyRegistered(String name, Long id) {
+        DatabaseHelper databaseHelper = DatabaseHelper.getInstance();
+        SQLiteDatabase db = databaseHelper.getReadableDatabase();
+
+        String where = ContactContract.NAME + " like '" + name + "'";
+        String[] columns = {ContactContract.NAME, ContactContract.ID};
+        Cursor cursor = db.query(ContactContract.TABLE,columns,where,null,null,null,null);
+
+
+        boolean isNameAlreadyRegistered = ContactContract.verifyNameAlreadyRegistered(cursor,id);
+
+        return isNameAlreadyRegistered;
+    }
 }

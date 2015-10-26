@@ -31,5 +31,12 @@ public final class ContactBusinessService {
        return ContactRepository.findContactsByName(name);
     }
 
+    public static boolean isEmailAlreadyRegistered(String email, Long id){
+        return ContactRepository.isEmailAlreadyRegistered(email, id);
+    }
 
+
+    public static boolean isNameAlreadyRegistered(String name, Long id) {
+        return ContactRepository.isNameAlreadyRegistered(name,id);
+    }
 }
