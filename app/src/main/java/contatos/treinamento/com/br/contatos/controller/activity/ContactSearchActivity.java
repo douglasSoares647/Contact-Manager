@@ -103,7 +103,7 @@ public class ContactSearchActivity extends AppCompatActivity implements AsyncInt
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editTextSearch.getText().toString().equals("")) {
-                    refreshList(contacts);
+                    setAdapter(contacts);
                 }
             }
         });
@@ -142,26 +142,19 @@ public class ContactSearchActivity extends AppCompatActivity implements AsyncInt
 
 
     private void updateListByName(String name){
-        List<Contact> contactsByName = new ArrayList<>();
-        for(Contact contact : contacts) {
-            if (contact.getName().toString().toLowerCase().startsWith(name.toLowerCase())) {
-                contactsByName.add(contact);
-            }
-        }
+        List<Contact> contactsByName = ContactBusinessService.findContactsByName(name);
         setAdapter(contactsByName);
     }
-
-
-    @Override
-    public void refreshList(List<Contact> contacts) {
-        this.contacts = contacts;
-        setAdapter(this.contacts);
-    }
-
 
     public void setAdapter(List<Contact>contacts){
         contactList.setAdapter(new ContactListAdapter(this, contacts));
         ContactListAdapter adapter = (ContactListAdapter) contactList.getAdapter();
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void refreshList(List<Contact> contacts) {
+        this.contacts = contacts;
+        setAdapter(contacts);
     }
 }

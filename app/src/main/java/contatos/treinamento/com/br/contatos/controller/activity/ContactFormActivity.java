@@ -128,7 +128,7 @@ public class ContactFormActivity extends AppCompatActivity {
                                                             (monthOfYear + 1 < 10 ? "0" + String.valueOf(monthOfYear + 1) : String.valueOf(monthOfYear + 1)) +
                                                             "/" + String.valueOf(year));
                                                 }
-                                            }, day, month + 1, year);
+                                            }, year, month + 1, day);
                                             datePicker.setCanceledOnTouchOutside(true);
                                             datePicker.getDatePicker().setMaxDate(new Date().getTime());
                                             datePicker.show();
@@ -259,6 +259,7 @@ public class ContactFormActivity extends AppCompatActivity {
             }
         });
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
