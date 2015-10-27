@@ -17,11 +17,9 @@ public class Contact implements Parcelable {
     private Float rating;
     private String telephone;
     private String email;
+    private Date lastDateModified;
 
 
-
-    public Contact() {
-    }
 
 
     @Override
@@ -93,6 +91,17 @@ public class Contact implements Parcelable {
         this.email = email;
     }
 
+    public Date getLastDateModified() {
+        return lastDateModified;
+    }
+
+    public void setLastDateModified(Date lastDateModified) {
+        this.lastDateModified = lastDateModified;
+    }
+
+    public Contact() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -108,6 +117,7 @@ public class Contact implements Parcelable {
         dest.writeFloat(this.rating == null ? 0 : this.rating);
         dest.writeString(this.telephone == null? "" : this.telephone);
         dest.writeString(this.email == null? "" : this.email);
+        dest.writeLong(lastDateModified == null?-1 : lastDateModified.getTime());
     }
 
     protected Contact(Parcel in) {
@@ -120,6 +130,8 @@ public class Contact implements Parcelable {
         this.rating = in.readFloat();
         this.telephone = in.readString();
         this.email = in.readString();
+        long tmpLastDateModified = in.readLong();
+        this.lastDateModified = tmpLastDateModified == -1? null : new Date(tmpLastDateModified);
     }
 
     public static final Creator<Contact> CREATOR = new Creator<Contact>() {

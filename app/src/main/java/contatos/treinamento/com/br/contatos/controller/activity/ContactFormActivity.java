@@ -67,7 +67,6 @@ public class ContactFormActivity extends AppCompatActivity {
     private RatingBar ratingBar;
     private Toolbar actionBar;
 
-
     private Contact contact;
     private String path;
 
@@ -152,7 +151,8 @@ public class ContactFormActivity extends AppCompatActivity {
 
         if (values != null) {
             contact = new Contact();
-            this.contact = values.getParcelable(PARAM_CONTACT);
+            this.contact =  values.getParcelable(PARAM_CONTACT);
+          //  getSupportActionBar().setTitle(getString(R.string.app_edit_contact));
         } else
             contact = new Contact();
     }
@@ -164,7 +164,7 @@ public class ContactFormActivity extends AppCompatActivity {
         contact.setRating(ratingBar.getRating());
         contact.setTelephone(editTextTelephone.getText().toString());
         contact.setEmail(editTextEmail.getText().toString());
-
+        contact.setLastDateModified(new Date());
     }
 
 

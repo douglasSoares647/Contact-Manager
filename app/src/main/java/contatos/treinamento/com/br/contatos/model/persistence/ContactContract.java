@@ -23,9 +23,10 @@ public final class ContactContract {
     public static final String PHOTO = "photo";
     public static final String EMAIL = "email";
     public static final String TELEPHONE = "telephone";
+    public static final String LAST_DATE_MODIFIED = "lastDateModified";
 
 
-    public static final String[] columns = {ID,NAME,BIRTH,WEBSITE,RATING,PHOTO,TELEPHONE,EMAIL};
+    public static final String[] columns = {ID,NAME,BIRTH,WEBSITE,RATING,PHOTO,TELEPHONE,EMAIL,LAST_DATE_MODIFIED};
 
     public static String createTableContact(){
         StringBuilder table = new StringBuilder();
@@ -38,7 +39,8 @@ public final class ContactContract {
         table.append(RATING + " real, ");
         table.append(PHOTO + " text, ");
         table.append(EMAIL + " text, ");
-        table.append(TELEPHONE + " text ); ");
+        table.append(TELEPHONE + " text, ");
+        table.append(LAST_DATE_MODIFIED + " text );");
 
         return table.toString();
     }
@@ -52,6 +54,7 @@ public final class ContactContract {
         values.put(PHOTO, contact.getPhoto());
         values.put(EMAIL, contact.getEmail());
         values.put(TELEPHONE, contact.getTelephone());
+        values.put(LAST_DATE_MODIFIED, FormHelper.convertDateToString(contact.getLastDateModified()));
 
         return values;
     }
@@ -79,6 +82,7 @@ public final class ContactContract {
             contact.setPhoto(cursor.getString(cursor.getColumnIndex(ContactContract.PHOTO)));
             contact.setEmail(cursor.getString(cursor.getColumnIndex(ContactContract.EMAIL)));
             contact.setTelephone(cursor.getString(cursor.getColumnIndex(ContactContract.TELEPHONE)));
+            contact.setLastDateModified(FormHelper.convertStringToDate(cursor.getString(cursor.getColumnIndex(ContactContract.LAST_DATE_MODIFIED))));
             return contact;
         }
         return null;

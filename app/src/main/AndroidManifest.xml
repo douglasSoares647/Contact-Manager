@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".controller.activity.ContactListActivity"
+            android:name=".controller.activity.MainView"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,25 +24,25 @@
         </activity>
         <activity
             android:name=".controller.activity.ContactInformationActivity"
-            android:parentActivityName=".controller.activity.ContactListActivity" >
+            android:parentActivityName=".controller.activity.MainView" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".controller.activity.ContactListActivity" />
+                android:value=".controller.activity.MainView" />
         </activity>
         <activity
             android:name=".controller.activity.ContactFormActivity"
             android:label="@string/bar_new_contact"
-            android:parentActivityName=".controller.activity.ContactListActivity" >
+            android:parentActivityName=".controller.activity.MainView" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".controller.activity.ContactListActivity" />
+                android:value=".controller.activity.MainView" />
         </activity>
         <activity
             android:name=".controller.activity.ContactSearchActivity"
-            android:parentActivityName=".controller.activity.ContactListActivity" >
+            android:parentActivityName=".controller.activity.MainView" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".controller.activity.ContactListActivity" />
+                android:value=".controller.activity.MainView" />
         </activity>
     </application>
 

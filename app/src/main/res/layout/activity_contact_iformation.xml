@@ -18,7 +18,8 @@
         android:layout_marginBottom="10dp"
         card_view:cardCornerRadius="3dp"
         card_view:cardElevation="2dp"
-        card_view:contentPadding="10dp">
+        card_view:contentPadding="10dp"
+        android:id="@+id/view">
 
 
         <RelativeLayout
@@ -62,6 +63,26 @@
                 android:text="@string/lbl_website_contact_list"
                 android:textSize="15dp" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewContactInfoBirth"
+                android:gravity="center_horizontal"
+                android:layout_below="@id/textViewContactInfoWebSite"
+                android:hint="@string/lbl_birth"
+                android:textSize="15dp"/>
+
+            <RatingBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:id="@+id/ratingBar"
+                android:layout_below="@id/textViewContactInfoBirth"
+                style="?android:attr/ratingBarStyleIndicator"
+                android:layout_centerHorizontal="true" />
+
         </RelativeLayout>
     </android.support.v7.widget.CardView>
+
+
 </RelativeLayout>

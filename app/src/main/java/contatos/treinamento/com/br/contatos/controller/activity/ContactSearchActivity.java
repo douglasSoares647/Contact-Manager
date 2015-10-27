@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import contatos.treinamento.com.br.contatos.R;
@@ -36,7 +37,7 @@ public class ContactSearchActivity extends AppCompatActivity implements AsyncInt
     private Toolbar actionBar;
 
     private Contact selectedContact;
-    private List<Contact> contacts;
+    private EditText editTextSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +47,11 @@ public class ContactSearchActivity extends AppCompatActivity implements AsyncInt
         bindContactList();
         bindActionBar();
 
+        searchDatabase();
 
+    }
+
+    private void searchDatabase() {
         AsyncLoadList asyncLoadList = new AsyncLoadList(this,this);
         asyncLoadList.execute();
     }
@@ -87,7 +92,7 @@ public class ContactSearchActivity extends AppCompatActivity implements AsyncInt
         actionBar = (Toolbar) findViewById(R.id.toolbar_search);
         setSupportActionBar(actionBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        final EditText editTextSearch = (EditText) actionBar.findViewById(R.id.editTextToolBarFind);
+        editTextSearch = (EditText) actionBar.findViewById(R.id.editTextToolBarFind);
         editTextSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -103,7 +108,7 @@ public class ContactSearchActivity extends AppCompatActivity implements AsyncInt
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editTextSearch.getText().toString().equals("")) {
-                    setAdapter(contacts);
+                    searchDatabase();
                 }
             }
         });
@@ -154,7 +159,20 @@ public class ContactSearchActivity extends AppCompatActivity implements AsyncInt
 
     @Override
     public void refreshList(List<Contact> contacts) {
-        this.contacts = contacts;
         setAdapter(contacts);
+    }
+
+    @Override
+    protected void onResume() {
+        String name = editTextSearch.getText().toString();
+
+        if (!name.isEmpty())
+        updateListByName(name);
+        else {
+            searchDatabase();
+        }
+
+        super.onResume();
+
     }
 }

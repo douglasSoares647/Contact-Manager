@@ -3,136 +3,87 @@ package contatos.treinamento.com.br.contatos.controller.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.view.ViewPager;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
-import android.view.Menu;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import contatos.treinamento.com.br.contatos.R;
 import contatos.treinamento.com.br.contatos.controller.adapter.ContactListAdapter;
-import contatos.treinamento.com.br.contatos.controller.adapter.NavigationAdapter;
 import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncInterface;
 import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncLoadList;
 import contatos.treinamento.com.br.contatos.controller.listener.RecyclerItemClickListener;
 import contatos.treinamento.com.br.contatos.model.ContactBusinessService;
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
-import contatos.treinamento.com.br.contatos.model.entity.NavigationItem;
 
 
-public class ContactListActivity extends AppCompatActivity implements AsyncInterface{
+public class ContactListActivity extends Fragment implements AsyncInterface {
 
     private RecyclerView contactList;
     private Contact selectedContact;
     private FloatingActionButton fab;
-    private Toolbar actionBar;
-    private ListView drawerList;
-    private ActionBarDrawerToggle drawerToggle;
-    private DrawerLayout drawerLayout;
     private List<Contact> contacts;
+    private View contactListFragmentView;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_contact_list);
-        bindActionBar();
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        contactListFragmentView = inflater.inflate(R.layout.activity_contact_list, container, false);
         bindContactList();
         bindFloatingActionButton();
-        bindDrawerList();
-        bindDrawerLayout();
+
+        return contactListFragmentView;
 
     }
 
-
-    private void bindDrawerLayout() {
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-        setDrawerToggle();
-        drawerLayout.setDrawerListener(drawerToggle);
-    }
-
-    private void setDrawerToggle() {
-        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close) {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                invalidateOptionsMenu();
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                invalidateOptionsMenu();
-            }
-        };
-
-        drawerToggle.setDrawerIndicatorEnabled(true);
-
-
-    }
-
-    private void bindDrawerList() {
-        drawerList = (ListView) findViewById(R.id.drawerList);
-        List<NavigationItem> navigationItems = new ArrayList<>();
-        navigationItems.add(new NavigationItem(R.mipmap.ic_navigation_drawer, getString(R.string.navigation_birthdays)));
-        navigationItems.add(new NavigationItem(R.mipmap.ic_navigation_drawer, "Teste"));
-
-        drawerList.setAdapter(new NavigationAdapter(this, navigationItems));
-    }
-
-
-    private void bindActionBar() {
-        actionBar = (Toolbar) findViewById(R.id.toolbar);
-        actionBar.setTitle("Contacts");
-        setSupportActionBar(actionBar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        actionBar.setNavigationIcon(R.mipmap.ic_navigation_drawer);
+    @Override
+    public void onResume() {
+        AsyncLoadList asyncLoadList = new AsyncLoadList(this, getActivity());
+        asyncLoadList.execute();
+        super.onResume();
     }
 
     private void bindFloatingActionButton() {
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) contactListFragmentView.findViewById(R.id.fab);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent goToContactForm = new Intent(ContactListActivity.this, ContactFormActivity.class);
+                Intent goToContactForm = new Intent(getActivity(), ContactFormActivity.class);
                 startActivity(goToContactForm);
             }
         });
     }
 
     private void bindContactList() {
-        contactList = (RecyclerView) findViewById(R.id.listViewContacts);
-        registerForContextMenu(contactList);
-        contactList.setLayoutManager(new LinearLayoutManager(this));
+        contactList = (RecyclerView) contactListFragmentView.findViewById(R.id.listViewContacts);
+        contactList.setLayoutManager(new LinearLayoutManager(getActivity()));
         contactList.setItemAnimator(new DefaultItemAnimator());
+        registerForContextMenu(contactList);
 
         contactList.addOnItemTouchListener(
-                new RecyclerItemClickListener(ContactListActivity.this, contactList, new RecyclerItemClickListener.OnItemClickListener() {
+                new RecyclerItemClickListener(getActivity(), contactList, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
                         ContactListAdapter adapter = (ContactListAdapter) contactList.getAdapter();
                         selectedContact = adapter.getItem(position);
 
-                        Intent goToContactInfo = new Intent(ContactListActivity.this, ContactInformationActivity.class);
+                        Intent goToContactInfo = new Intent(getActivity(), ContactInformationActivity.class);
                         goToContactInfo.putExtra(ContactInformationActivity.PARAM_CONTACTINFO, selectedContact);
                         startActivity(goToContactInfo);
                     }
@@ -147,54 +98,10 @@ public class ContactListActivity extends AppCompatActivity implements AsyncInter
         );
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_contact_list, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.item_search) {
-            onMenuSearchClick();
-        }
-        if(drawerToggle.onOptionsItemSelected(item)){
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void onMenuSearchClick() {
-       Intent goToSearchForm = new Intent(ContactListActivity.this, ContactSearchActivity.class);
-        startActivity(goToSearchForm);
-    }
-
-    @Override
-    protected void onResume() {
-        AsyncLoadList asyncLoadList = new AsyncLoadList(this, this);
-        asyncLoadList.execute();
-        super.onResume();
-    }
-
-    @Override
-    public void onPostCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onPostCreate(savedInstanceState, persistentState);
-        drawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        drawerToggle.onConfigurationChanged(newConfig);
-    }
-
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        getMenuInflater().inflate(R.menu.context_menu_contact_list, menu);
+        getActivity().getMenuInflater().inflate(R.menu.context_menu_contact_list, menu);
         super.onCreateContextMenu(menu, v, menuInfo);
     }
 
@@ -232,7 +139,7 @@ public class ContactListActivity extends AppCompatActivity implements AsyncInter
             Intent goToWebSite = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(goToWebSite);
         } catch (Exception e) {
-            Toast.makeText(this, getString(R.string.msg_connection_failed), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), getString(R.string.msg_connection_failed), Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -240,7 +147,7 @@ public class ContactListActivity extends AppCompatActivity implements AsyncInter
     private void onMenuDeleteClick() {
 
 
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(getActivity())
                 .setMessage(getString(R.string.dialog_delete))
                 .setNeutralButton(getString(R.string.dialog_no), null)
                 .setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
@@ -256,11 +163,12 @@ public class ContactListActivity extends AppCompatActivity implements AsyncInter
     }
 
 
-
     private void onMenuEditClick() {
-        Intent goToContactForm = new Intent(this, ContactFormActivity.class);
+        Intent goToContactForm = new Intent(getActivity().getBaseContext(), ContactFormActivity.class);
         goToContactForm.putExtra(ContactFormActivity.PARAM_CONTACT, selectedContact);
+
         startActivity(goToContactForm);
+
     }
 
     @Override
@@ -271,7 +179,7 @@ public class ContactListActivity extends AppCompatActivity implements AsyncInter
 
 
     private void setAdapter() {
-        contactList.setAdapter(new ContactListAdapter(this, this.contacts));
+        contactList.setAdapter(new ContactListAdapter(getActivity(), this.contacts));
         ContactListAdapter adapter = (ContactListAdapter) contactList.getAdapter();
         adapter.notifyDataSetChanged();
     }

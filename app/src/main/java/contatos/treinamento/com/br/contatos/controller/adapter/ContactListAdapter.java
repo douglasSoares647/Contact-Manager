@@ -17,10 +17,12 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
+import java.util.Date;
 import java.util.List;
 
 import contatos.treinamento.com.br.contatos.R;
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
+import contatos.treinamento.com.br.contatos.model.util.FormHelper;
 
 /**
  * Created by c1284521 on 14/10/2015.
@@ -54,8 +56,8 @@ public class ContactListAdapter extends
 
         viewHolder.itemView.setLongClickable(true);
         TextView textViewName = viewHolder.textViewName;
-        RatingBar ratingBarItemList = viewHolder.ratingBar;
         final ImageView imageViewItemList = viewHolder.photo;
+        TextView textViewLastModified = viewHolder.textViewLastModified;
 
 
         if (contact.getPhoto() != null) {
@@ -90,8 +92,19 @@ public class ContactListAdapter extends
 
 
         textViewName.setText(contact.getName());
-        ratingBarItemList.setRating(contact.getRating());
-        ratingBarItemList.setIsIndicator(true);
+
+
+        Date currentDate = new Date();
+        long diffDate = (contact.getLastDateModified().getTime()- currentDate.getTime())/1000/60/60/24;
+        if(diffDate==0){
+            textViewLastModified.setText(context.getString(R.string.lbl_today));
+        }
+        else if(diffDate>0&&diffDate<=1){
+            textViewLastModified.setText(context.getString(R.string.lbl_yesterday));
+        }
+            else{
+            textViewLastModified.setText(FormHelper.convertDateToString(contact.getLastDateModified()));
+        }
 
     }
 
@@ -109,13 +122,14 @@ public class ContactListAdapter extends
         public TextView textViewName;
         public ImageView photo;
         public RatingBar ratingBar;
+        public TextView textViewLastModified;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             textViewName = (TextView) itemView.findViewById(R.id.textViewName);
-            ratingBar = (RatingBar) itemView.findViewById(R.id.ratingBarItemList);
             photo = (ImageView) itemView.findViewById(R.id.imageViewContactItemList);
+            textViewLastModified = (TextView) itemView.findViewById(R.id.textViewLastModified);
 
         }
     }

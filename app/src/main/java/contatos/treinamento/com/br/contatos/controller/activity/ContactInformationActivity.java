@@ -12,13 +12,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.text.Normalizer;
+
 import contatos.treinamento.com.br.contatos.R;
 import contatos.treinamento.com.br.contatos.model.ContactBusinessService;
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
+import contatos.treinamento.com.br.contatos.model.util.FormHelper;
 
 /**
  * Created by c1284521 on 19/10/2015.
@@ -29,6 +33,8 @@ public class ContactInformationActivity extends AppCompatActivity {
     private TextView textViewTelephone;
     private TextView textViewWebSite;
     private Toolbar actionBar;
+    private RatingBar ratingBar;
+    private TextView textViewBirth;
 
     private ImageView iconInformation;
 
@@ -50,6 +56,22 @@ public class ContactInformationActivity extends AppCompatActivity {
         bindTextViewEmail();
         bindTextViewWebSite();
         bindActionBar();
+        bindRatingBar();
+        bindTextViewBirth();
+    }
+
+    private void bindRatingBar() {
+        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+        ratingBar.setRating(contact.getRating()==null?0:contact.getRating());
+    }
+
+    private void bindTextViewBirth() {
+        textViewBirth = (TextView) findViewById(R.id.textViewContactInfoBirth);
+        if(contact.getBirth()!=null)
+        textViewBirth.setText(FormHelper.convertDateToString(contact.getBirth()));
+        else
+            textViewBirth.setText("");
+
     }
 
     private void bindImageIcon() {
@@ -168,5 +190,6 @@ public class ContactInformationActivity extends AppCompatActivity {
         bindTextViewEmail();
         bindTextViewWebSite();
         bindActionBar();
+        bindRatingBar();
     }
 }
