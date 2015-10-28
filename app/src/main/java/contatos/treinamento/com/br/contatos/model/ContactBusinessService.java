@@ -37,6 +37,10 @@ public final class ContactBusinessService {
 
 
     public static boolean isNameAlreadyRegistered(String name, Long id) {
-        return ContactRepository.isNameAlreadyRegistered(name,id);
+        return ContactRepository.isNameAlreadyRegistered(name, id);
+    }
+
+    public static List<Contact> loadFavorites() {
+        return ContactRepository.loadFavorites();
     }
 }

@@ -25,4 +25,11 @@
         app:showAsAction="always"
         android:title="@string/lbl_call">
     </item>
+
+
+    <item
+        android:id="@+id/context_menu_favorite"
+        app:showAsAction="always"
+        android:title="@string/lbl_add_favorites">
+    </item>
 </menu>

@@ -18,6 +18,7 @@ public class Contact implements Parcelable {
     private String telephone;
     private String email;
     private Date lastDateModified;
+    private boolean isFavorite;
 
 
 
@@ -99,6 +100,14 @@ public class Contact implements Parcelable {
         this.lastDateModified = lastDateModified;
     }
 
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setIsFavorite(boolean isFavorite) {
+        this.isFavorite = isFavorite;
+    }
+
     public Contact() {
     }
 
@@ -116,8 +125,9 @@ public class Contact implements Parcelable {
         dest.writeString(this.webSite == null ? "" : this.webSite);
         dest.writeFloat(this.rating == null ? 0 : this.rating);
         dest.writeString(this.telephone == null? "" : this.telephone);
-        dest.writeString(this.email == null? "" : this.email);
-        dest.writeLong(lastDateModified == null?-1 : lastDateModified.getTime());
+        dest.writeString(this.email == null ? "" : this.email);
+        dest.writeLong(lastDateModified == null ? -1 : lastDateModified.getTime());
+        dest.writeByte(isFavorite ? (byte) 1 : (byte) 0);
     }
 
     protected Contact(Parcel in) {
@@ -132,6 +142,8 @@ public class Contact implements Parcelable {
         this.email = in.readString();
         long tmpLastDateModified = in.readLong();
         this.lastDateModified = tmpLastDateModified == -1? null : new Date(tmpLastDateModified);
+        byte tmpIsFavorite = in.readByte();
+        this.isFavorite = tmpIsFavorite == 1? true : false;
     }
 
     public static final Creator<Contact> CREATOR = new Creator<Contact>() {

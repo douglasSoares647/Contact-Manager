@@ -24,9 +24,10 @@ public final class ContactContract {
     public static final String EMAIL = "email";
     public static final String TELEPHONE = "telephone";
     public static final String LAST_DATE_MODIFIED = "lastDateModified";
+    public static final String ISFAVORITE = "isFavorite" ;
 
+    public static final String[] columns = {ID,NAME,BIRTH,WEBSITE,RATING,PHOTO,TELEPHONE,EMAIL,LAST_DATE_MODIFIED,ISFAVORITE};
 
-    public static final String[] columns = {ID,NAME,BIRTH,WEBSITE,RATING,PHOTO,TELEPHONE,EMAIL,LAST_DATE_MODIFIED};
 
     public static String createTableContact(){
         StringBuilder table = new StringBuilder();
@@ -40,8 +41,8 @@ public final class ContactContract {
         table.append(PHOTO + " text, ");
         table.append(EMAIL + " text, ");
         table.append(TELEPHONE + " text, ");
-        table.append(LAST_DATE_MODIFIED + " text );");
-
+        table.append(LAST_DATE_MODIFIED + " text, ");
+        table.append(ISFAVORITE + " integer );");
         return table.toString();
     }
     public static ContentValues getContentValues(Contact contact){
@@ -55,6 +56,7 @@ public final class ContactContract {
         values.put(EMAIL, contact.getEmail());
         values.put(TELEPHONE, contact.getTelephone());
         values.put(LAST_DATE_MODIFIED, FormHelper.convertDateToString(contact.getLastDateModified()));
+        values.put(ISFAVORITE, contact.isFavorite()? 1 : 0);
 
         return values;
     }
@@ -83,6 +85,7 @@ public final class ContactContract {
             contact.setEmail(cursor.getString(cursor.getColumnIndex(ContactContract.EMAIL)));
             contact.setTelephone(cursor.getString(cursor.getColumnIndex(ContactContract.TELEPHONE)));
             contact.setLastDateModified(FormHelper.convertStringToDate(cursor.getString(cursor.getColumnIndex(ContactContract.LAST_DATE_MODIFIED))));
+            contact.setIsFavorite((cursor.getLong(cursor.getColumnIndex(ContactContract.ISFAVORITE)))==1?true:false);
             return contact;
         }
         return null;

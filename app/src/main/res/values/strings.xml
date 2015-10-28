@@ -51,6 +51,7 @@
     <string name="title_section3">Section 3</string>
 
     <string name="action_example">Example action</string>
+    <string name="lbl_add_favorites">Add to favorites</string>
 
 
 </resources>

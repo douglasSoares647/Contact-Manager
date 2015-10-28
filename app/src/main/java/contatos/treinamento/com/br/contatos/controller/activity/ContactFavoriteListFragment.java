@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,26 +23,21 @@ import java.util.List;
 
 import contatos.treinamento.com.br.contatos.R;
 import contatos.treinamento.com.br.contatos.controller.adapter.ContactListAdapter;
-import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncInterface;
-import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncLoadList;
-import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncSave;
 import contatos.treinamento.com.br.contatos.controller.listener.RecyclerItemClickListener;
 import contatos.treinamento.com.br.contatos.model.ContactBusinessService;
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
 
-
-public class ContactListFragment extends Fragment implements AsyncInterface {
-
+/**
+ * Created by c1284521 on 28/10/2015.
+ */
+public class ContactFavoriteListFragment extends Fragment {
     private RecyclerView contactList;
     private Contact selectedContact;
     private FloatingActionButton fab;
     private List<Contact> contacts;
     private View contactListFragmentView;
 
-    public ContactListFragment() {
-    }
-
-    ;
+    public ContactFavoriteListFragment(){};
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -55,8 +51,7 @@ public class ContactListFragment extends Fragment implements AsyncInterface {
 
     @Override
     public void onResume() {
-        AsyncLoadList asyncLoadList = new AsyncLoadList(this, getActivity());
-        asyncLoadList.execute();
+        refreshList(ContactBusinessService.loadFavorites());
         super.onResume();
     }
 
@@ -124,18 +119,9 @@ public class ContactListFragment extends Fragment implements AsyncInterface {
 
             else if (id == R.id.context_menu_call)
                 onMenuCallClick();
-            else if (id == R.id.context_menu_favorite) {
-                onMenuFavoriteClick();
-            }
 
         }
         return super.onContextItemSelected(item);
-    }
-
-    private void onMenuFavoriteClick() {
-        selectedContact.setIsFavorite(true);
-        AsyncSave save = new AsyncSave(getActivity());
-        save.execute(selectedContact);
     }
 
     private void onMenuCallClick() {
@@ -185,7 +171,6 @@ public class ContactListFragment extends Fragment implements AsyncInterface {
 
     }
 
-    @Override
     public void refreshList(List<Contact> contacts) {
         this.contacts = contacts;
         setAdapter();

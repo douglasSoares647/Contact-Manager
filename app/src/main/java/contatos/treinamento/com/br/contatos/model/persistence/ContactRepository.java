@@ -102,8 +102,21 @@ public final class ContactRepository {
         Cursor cursor = db.query(ContactContract.TABLE,columns,where,null,null,null,null);
 
 
-        boolean isNameAlreadyRegistered = ContactContract.verifyNameAlreadyRegistered(cursor,id);
+        boolean isNameAlreadyRegistered = ContactContract.verifyNameAlreadyRegistered(cursor, id);
 
         return isNameAlreadyRegistered;
+    }
+
+    public static List<Contact> loadFavorites() {
+
+        DatabaseHelper databaseHelper = DatabaseHelper.getInstance();
+        SQLiteDatabase db = databaseHelper.getReadableDatabase();
+
+        String where = ContactContract.ISFAVORITE + " = 1";
+        Cursor cursor = db.query(ContactContract.TABLE,ContactContract.columns,where,null,null,null,ContactContract.NAME);
+
+        List<Contact> contacts = ContactContract.getContacts(cursor);
+
+        return contacts;
     }
 }
