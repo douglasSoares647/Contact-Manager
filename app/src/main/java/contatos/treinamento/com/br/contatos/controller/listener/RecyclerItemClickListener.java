@@ -6,8 +6,6 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
-import contatos.treinamento.com.br.contatos.controller.activity.ContactListActivity;
-
 public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
 
 

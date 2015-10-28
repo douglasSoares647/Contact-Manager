@@ -1,5 +1,6 @@
 package contatos.treinamento.com.br.contatos.model.util;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -9,6 +10,8 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import java.text.SimpleDateFormat;
@@ -85,7 +88,7 @@ public final class FormHelper {
     public static boolean validateName(EditText editTextName, Long id){
         boolean isNameValidated = false;
         String name = editTextName.getText().toString();
-        if(ContactBusinessService.isNameAlreadyRegistered(name,id)){
+        if(ContactBusinessService.isNameAlreadyRegistered(name, id)){
             editTextName.setError("Name already registered");
             isNameValidated = true;
         }
@@ -95,6 +98,18 @@ public final class FormHelper {
 
     }
 
+
+    public static void hideKeyboard(Activity context,View view) {
+        InputMethodManager inputMethodManager =(InputMethodManager)context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+    }
+
+    public static void showKeyboard(Activity context,View view) {
+        InputMethodManager inputMethodManager =(InputMethodManager)context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.showSoftInputFromInputMethod(view.getWindowToken(), 0);
+
+    }
 
 
 

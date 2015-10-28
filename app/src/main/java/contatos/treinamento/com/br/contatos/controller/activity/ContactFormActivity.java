@@ -3,12 +3,10 @@ package contatos.treinamento.com.br.contatos.controller.activity;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.ContactsContract;
@@ -18,38 +16,27 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.text.method.KeyListener;
-import android.view.KeyEvent;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import java.io.File;
-import java.text.Normalizer;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 import contatos.treinamento.com.br.contatos.R;
 import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncSave;
-import contatos.treinamento.com.br.contatos.model.ContactBusinessService;
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
-import contatos.treinamento.com.br.contatos.model.util.BitmapHelper;
 import contatos.treinamento.com.br.contatos.model.util.FormHelper;
 
 /**
@@ -105,36 +92,28 @@ public class ContactFormActivity extends AppCompatActivity {
     private void bindBirth() {
         editTextBirth = (EditText) findViewById(R.id.editTextBirth);
         editTextBirth.setText(contact.getBirth() == null ? "" : FormHelper.convertDateToString(contact.getBirth()));
-        editTextBirth.setFocusable(false);
-        editTextBirth.setClickable(false);
+        editTextBirth.setKeyListener(null);
+        editTextBirth.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if(b)
+                FormHelper.hideKeyboard(ContactFormActivity.this, editTextBirth);
+                showDatePickerDialog();
+            }
+        });
+        editTextBirth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FormHelper.hideKeyboard(ContactFormActivity.this, editTextBirth);
+                showDatePickerDialog();
+            }
+        });
         editTextBirth.setLongClickable(false);
         btnBirth = (ImageButton) findViewById(R.id.btnBirth);
         btnBirth .setColorFilter(getResources().getColor(R.color.colorPrimary));
-        btnBirth.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            final Calendar calendar = Calendar.getInstance();
-                                            calendar.setTimeInMillis(System.currentTimeMillis());
-                                            int day = calendar.get(Calendar.DAY_OF_MONTH);
-                                            int month = calendar.get(Calendar.MONTH);
-                                            int year = calendar.get(Calendar.YEAR);
-
-
-                                            DatePickerDialog datePicker = new DatePickerDialog(ContactFormActivity.this, new DatePickerDialog.OnDateSetListener() {
-                                                @Override
-                                                public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
-                                                    editTextBirth.setText(String.valueOf(dayOfMonth) + "/" +
-                                                            (monthOfYear + 1 < 10 ? "0" + String.valueOf(monthOfYear + 1) : String.valueOf(monthOfYear + 1)) +
-                                                            "/" + String.valueOf(year));
-                                                }
-                                            }, year, month + 1, day);
-                                            datePicker.setCanceledOnTouchOutside(true);
-                                            datePicker.getDatePicker().setMaxDate(new Date().getTime());
-                                            datePicker.show();
-                                        }
-                                    }
-        );
     }
+
+
 
 
     private void bindActionBar() {
@@ -150,9 +129,11 @@ public class ContactFormActivity extends AppCompatActivity {
         Bundle values = getIntent().getExtras();
 
         if (values != null) {
-            contact = new Contact();
+            ContactListFragment fragment = new ContactListFragment();
+            //ESCONDE O FRAGMENT DEPOIS DA TRANSIÇÃO
+            getSupportFragmentManager().beginTransaction().add(android.R.id.content, fragment).hide(fragment).commit();
             this.contact =  values.getParcelable(PARAM_CONTACT);
-          //  getSupportActionBar().setTitle(getString(R.string.app_edit_contact));
+            getSupportActionBar().setTitle(getString(R.string.app_edit_contact));
         } else
             contact = new Contact();
     }
@@ -179,12 +160,27 @@ public class ContactFormActivity extends AppCompatActivity {
 
         editTextWebSite = (EditText) findViewById(R.id.editTextWebSite);
         editTextWebSite.setText(contact.getWebSite() == null ? "" : contact.getWebSite());
+        editTextWebSite.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if(b){
+                    FormHelper.showKeyboard(ContactFormActivity.this,editTextWebSite);
+                }
+            }
+        });
 
         editTextTelephone = (EditText) findViewById(R.id.editTextTelephone);
         editTextTelephone.setText(contact.getTelephone() == null ? "" : contact.getTelephone());
 
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextEmail.setText(contact.getEmail() == null ? "" : contact.getEmail());
+        editTextEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (!b)
+                    FormHelper.hideKeyboard(ContactFormActivity.this, editTextEmail);
+            }
+        });
 
     }
 
@@ -296,6 +292,32 @@ public class ContactFormActivity extends AppCompatActivity {
             finish();
         }
 
+    }
+
+
+
+    private void showDatePickerDialog() {
+        if (editTextBirth.isFocused()) {
+            final Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            int month = calendar.get(Calendar.MONTH);
+            int year = calendar.get(Calendar.YEAR);
+
+
+            DatePickerDialog datePicker = new DatePickerDialog(ContactFormActivity.this, new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+                    editTextBirth.setText(String.valueOf(dayOfMonth) + "/" +
+                            (monthOfYear + 1 < 10 ? "0" + String.valueOf(monthOfYear + 1) : String.valueOf(monthOfYear + 1)) +
+                            "/" + String.valueOf(year));
+                    editTextWebSite.requestFocus();
+                }
+            }, year, month + 1, day);
+            datePicker.setCanceledOnTouchOutside(true);
+            datePicker.getDatePicker().setMaxDate(new Date().getTime());
+            datePicker.show();
+        }
     }
 }
 

@@ -17,6 +17,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -94,15 +96,21 @@ public class ContactListAdapter extends
         textViewName.setText(contact.getName());
 
 
-        Date currentDate = new Date();
-        long diffDate = (contact.getLastDateModified().getTime()- currentDate.getTime())/1000/60/60/24;
+        Date currentDate = null;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            currentDate = simpleDateFormat.parse(FormHelper.convertDateToString(new Date()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        long diffDate = ((contact.getLastDateModified().getTime()- currentDate.getTime())/1000/60/60/24)*-1;
         if(diffDate==0){
             textViewLastModified.setText(context.getString(R.string.lbl_today));
         }
         else if(diffDate>0&&diffDate<=1){
             textViewLastModified.setText(context.getString(R.string.lbl_yesterday));
         }
-            else{
+        else{
             textViewLastModified.setText(FormHelper.convertDateToString(contact.getLastDateModified()));
         }
 

@@ -33,7 +33,7 @@ import contatos.treinamento.com.br.contatos.model.ContactBusinessService;
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
 
 
-public class ContactListActivity extends Fragment implements AsyncInterface {
+public class ContactListFragment extends Fragment implements AsyncInterface {
 
     private RecyclerView contactList;
     private Contact selectedContact;
@@ -82,7 +82,6 @@ public class ContactListActivity extends Fragment implements AsyncInterface {
                     public void onItemClick(View view, int position) {
                         ContactListAdapter adapter = (ContactListAdapter) contactList.getAdapter();
                         selectedContact = adapter.getItem(position);
-
                         Intent goToContactInfo = new Intent(getActivity(), ContactInformationActivity.class);
                         goToContactInfo.putExtra(ContactInformationActivity.PARAM_CONTACTINFO, selectedContact);
                         startActivity(goToContactInfo);
@@ -108,19 +107,23 @@ public class ContactListActivity extends Fragment implements AsyncInterface {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        int id = item.getItemId();
 
-        if (id == R.id.context_menu_edit)
-            onMenuEditClick();
+        if (getUserVisibleHint()) {
+            int id = item.getItemId();
 
-        else if (id == R.id.context_menu_delete)
-            onMenuDeleteClick();
+            if (id == R.id.context_menu_edit)
+                onMenuEditClick();
 
-        else if (id == R.id.context_menu_website)
-            onMenuWebSiteClick();
+            else if (id == R.id.context_menu_delete)
+                onMenuDeleteClick();
 
-        else if (id == R.id.context_menu_call)
-            onMenuCallClick();
+            else if (id == R.id.context_menu_website)
+                onMenuWebSiteClick();
+
+            else if (id == R.id.context_menu_call)
+                onMenuCallClick();
+
+        }
         return super.onContextItemSelected(item);
     }
 

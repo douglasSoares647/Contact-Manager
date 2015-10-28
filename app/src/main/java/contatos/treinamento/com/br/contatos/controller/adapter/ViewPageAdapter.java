@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import contatos.treinamento.com.br.contatos.controller.activity.ContactListActivity;
+import contatos.treinamento.com.br.contatos.controller.activity.ContactListFragment;
 
 /**
  * Created by hp1 on 21-01-2015.
@@ -30,11 +30,11 @@ public class ViewPageAdapter extends FragmentStatePagerAdapter {
 
         if (position == 0) // if the position is 0 we are returning the First tab
         {
-            ContactListActivity tab1 = new ContactListActivity();
+            ContactListFragment tab1 = new ContactListFragment();
             return tab1;
         } else             // As we are having 2 tabs if the position is now 0 it must be 1 so we are returning second tab
         {
-            ContactListActivity tab2 = new ContactListActivity();
+            ContactListFragment tab2 = new ContactListFragment();
             return tab2;
         }
 
