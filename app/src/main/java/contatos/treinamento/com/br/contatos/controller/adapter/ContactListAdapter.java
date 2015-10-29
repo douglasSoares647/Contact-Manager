@@ -2,6 +2,7 @@ package contatos.treinamento.com.br.contatos.controller.adapter;
 
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
@@ -10,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -80,7 +82,7 @@ public class ContactListAdapter extends
 //            public void onClick(View view) {
 //                Dialog dialog = new Dialog(context, R.style.CustomDialog);
 //                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//                dialog.setContentView(R.layout.contact_image);
+//                dialog.menu
 //                ImageView imageBigger = (ImageView) dialog.findViewById(R.id.contact_image_bigger);
 //                TextView textViewContactNameOnDialog = (TextView) dialog.findViewById(R.id.textViewNameOnDialog);
 //                textViewContactNameOnDialog.setText(contact.getName());
@@ -129,7 +131,6 @@ public class ContactListAdapter extends
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView textViewName;
         public ImageView photo;
-        public RatingBar ratingBar;
         public TextView textViewLastModified;
 
         public ViewHolder(View itemView) {

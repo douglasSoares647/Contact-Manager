@@ -37,6 +37,7 @@ import java.util.Date;
 import contatos.treinamento.com.br.contatos.R;
 import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncSave;
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
+import contatos.treinamento.com.br.contatos.model.util.CameraHelper;
 import contatos.treinamento.com.br.contatos.model.util.FormHelper;
 
 /**
@@ -73,6 +74,7 @@ public class ContactFormActivity extends AppCompatActivity {
         bindBtnImportContact();
 
         bindRatingBar();
+        overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
 
     }
 
@@ -192,22 +194,17 @@ public class ContactFormActivity extends AppCompatActivity {
         photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent goToCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-                path = Environment.getExternalStorageDirectory().toString() + "/" + System.currentTimeMillis() + ".png";
-                File photo = new File(path);
-                Uri uri = Uri.fromFile(photo);
-
-                goToCamera.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                startActivityForResult(goToCamera, 10);
+                path = CameraHelper.takePhotoWithCamera (ContactFormActivity.this);
             }
         });
     }
 
 
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 10) {
+        if (requestCode == CameraHelper.CAMERA_RESULT_OK) {
             if (resultCode == Activity.RESULT_OK) {
                 contact.setPhoto(path);
                 loadImage(path);

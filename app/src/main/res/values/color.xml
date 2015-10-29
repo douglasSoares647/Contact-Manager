@@ -7,4 +7,6 @@
     <color name="colorActionBarSearch">#FFFFFFFF</color>
     <color name="slidingTabBar">#FFFFFF</color>
 
+    <color name="toolbar_contact_photo_color">#000</color>
+
 </resources>

@@ -15,7 +15,6 @@ public class AsyncSave extends AsyncTask<Contact,Void,Void> {
 
     Activity context;
     ProgressDialog pg;
-
     public AsyncSave(Activity context) {
         this.context = context;
     }
@@ -40,4 +39,5 @@ public class AsyncSave extends AsyncTask<Contact,Void,Void> {
         pg.dismiss();
         super.onPostExecute(aVoid);
     }
+
 }

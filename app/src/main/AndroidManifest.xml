@@ -45,6 +45,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".controller.activity.MainView" />
         </activity>
+
+
+        <activity android:name=".controller.activity.ContactPhotoActivity"
+            android:parentActivityName=".controller.activity.ContactInformationActivity">
+            <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".controller.activity.ContactInformationActivity">
+            </meta-data>
+        </activity>
+
     </application>
 
 </manifest>

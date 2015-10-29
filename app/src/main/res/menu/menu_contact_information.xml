@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:title="@string/menu_edit"
@@ -9,6 +10,13 @@
     <item
         android:title="@string/menu_delete"
         android:id="@+id/menu_info_delete">
+    </item>
+
+    <item
+        android:title="@string/lbl_take_photo"
+        android:id="@+id/menu_info_take_photo"
+        android:icon="@mipmap/ic_camera_menu"
+        app:showAsAction="always">
     </item>
 
 </menu>

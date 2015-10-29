@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:id="@+id/context_menu_edit"
+        android:title="@string/menu_edit"
+        app:showAsAction="always"></item>
+
+    <item
+        android:id="@+id/context_menu_delete"
+        app:showAsAction="always"
+        android:title="@string/menu_delete">
+    </item>
+
+    <item
+        android:id="@+id/context_menu_website"
+        app:showAsAction="always"
+        android:title="@string/menu_website">
+    </item>
+
+    <item
+        android:id="@+id/context_menu_call"
+        app:showAsAction="always"
+        android:title="@string/lbl_call">
+    </item>
+
+
+    <item
+        android:id="@+id/context_menu_remove_favorite"
+        app:showAsAction="always"
+        android:title="@string/lbl_remove_from_favorites">
+    </item>
+</menu>

@@ -18,6 +18,10 @@
     <string name="lbl_today">Today</string>
     <string name="lbl_yesterday">Yesterday</string>
     <string name="lbl_find_contacs">Find contacts</string>
+    <string name="lbl_add_favorites">Add to favorites</string>
+    <string name="lbl_remove_from_favorites">Remove from favorites</string>
+    <string name="lbl_take_photo">Take photo</string>
+    <string name="lbl_contact_photo">"Contact photo"</string>
 
     <string name="bar_new_contact">New Contact</string>
     <string name="item_accept">Accept Item</string>
@@ -51,7 +55,7 @@
     <string name="title_section3">Section 3</string>
 
     <string name="action_example">Example action</string>
-    <string name="lbl_add_favorites">Add to favorites</string>
+
 
 
 </resources>

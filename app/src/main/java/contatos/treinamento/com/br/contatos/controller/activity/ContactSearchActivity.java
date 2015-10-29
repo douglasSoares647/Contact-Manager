@@ -49,6 +49,7 @@ public class ContactSearchActivity extends AppCompatActivity implements AsyncInt
 
         searchDatabase();
 
+        overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
     }
 
     private void searchDatabase() {
@@ -74,19 +75,6 @@ public class ContactSearchActivity extends AppCompatActivity implements AsyncInt
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        getMenuInflater().inflate(R.menu.context_menu_contact_list,menu);
-        super.onCreateContextMenu(menu, v, menuInfo);
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-
-        return super.onContextItemSelected(item);
-    }
 
     private void bindActionBar() {
         actionBar = (Toolbar) findViewById(R.id.toolbar_search);

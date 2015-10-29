@@ -25,12 +25,13 @@ import contatos.treinamento.com.br.contatos.controller.adapter.ContactListAdapte
 import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncInterface;
 import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncLoadList;
 import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncSave;
+import contatos.treinamento.com.br.contatos.controller.interfaces.UpdatableViewPager;
 import contatos.treinamento.com.br.contatos.controller.listener.RecyclerItemClickListener;
 import contatos.treinamento.com.br.contatos.model.ContactBusinessService;
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
 
 
-public class ContactListFragment extends Fragment implements AsyncInterface {
+public class ContactListFragment extends Fragment implements AsyncInterface{
 
     private RecyclerView contactList;
     private Contact selectedContact;
@@ -38,10 +39,9 @@ public class ContactListFragment extends Fragment implements AsyncInterface {
     private List<Contact> contacts;
     private View contactListFragmentView;
 
+
     public ContactListFragment() {
     }
-
-    ;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -136,6 +136,9 @@ public class ContactListFragment extends Fragment implements AsyncInterface {
         selectedContact.setIsFavorite(true);
         AsyncSave save = new AsyncSave(getActivity());
         save.execute(selectedContact);
+
+        UpdatableViewPager activityWithViewPager = (UpdatableViewPager) getActivity();
+        activityWithViewPager.updateViewPager();
     }
 
     private void onMenuCallClick() {

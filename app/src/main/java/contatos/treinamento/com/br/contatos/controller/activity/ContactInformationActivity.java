@@ -1,11 +1,15 @@
 package contatos.treinamento.com.br.contatos.controller.activity;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -16,12 +20,15 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import java.text.Normalizer;
 
 import contatos.treinamento.com.br.contatos.R;
+import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncSave;
 import contatos.treinamento.com.br.contatos.model.ContactBusinessService;
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
+import contatos.treinamento.com.br.contatos.model.util.CameraHelper;
 import contatos.treinamento.com.br.contatos.model.util.FormHelper;
 
 /**
@@ -35,6 +42,8 @@ public class ContactInformationActivity extends AppCompatActivity {
     private Toolbar actionBar;
     private RatingBar ratingBar;
     private TextView textViewBirth;
+    private ImageView photo;
+    private String pathPhoto;
 
     private ImageView iconInformation;
 
@@ -58,11 +67,13 @@ public class ContactInformationActivity extends AppCompatActivity {
         bindActionBar();
         bindRatingBar();
         bindTextViewBirth();
+
+        overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
     }
 
     private void bindRatingBar() {
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
-        ratingBar.setRating(contact.getRating()==null?0:contact.getRating());
+        ratingBar.setRating(contact.getRating() == null ? 0 : contact.getRating());
     }
 
     private void bindTextViewBirth() {
@@ -82,8 +93,7 @@ public class ContactInformationActivity extends AppCompatActivity {
     private void initContact() {
         Bundle values = getIntent().getExtras();
 
-        if (contact == null) {
-            contact = new Contact();
+        if (values != null) {
             contact = values.getParcelable(PARAM_CONTACTINFO);
         } else contact = new Contact();
     }
@@ -107,7 +117,14 @@ public class ContactInformationActivity extends AppCompatActivity {
             NavUtils.navigateUpFromSameTask(this);
             return true;
         }
+        else if (id == R.id.menu_info_take_photo){
+            onMenuTakePhotoClick();
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void onMenuTakePhotoClick() {
+
     }
 
     private void onMenuDeleteClick() {
@@ -133,7 +150,7 @@ public class ContactInformationActivity extends AppCompatActivity {
 
     private void bindActionBar() {
         View view = findViewById(R.id.actionBarContactInfo);
-        ImageView photo = (ImageView) view.findViewById(R.id.imageViewContactToolbar);
+        photo = (ImageView) view.findViewById(R.id.imageViewContactToolbar);
 
         actionBar = (Toolbar) view.findViewById(R.id.actionBarWithImage);
         actionBar.setTitle("");
@@ -146,6 +163,15 @@ public class ContactInformationActivity extends AppCompatActivity {
         }
         setSupportActionBar(actionBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        actionBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent goToContactPhotoActivity = new Intent(ContactInformationActivity.this,ContactPhotoActivity.class);
+                goToContactPhotoActivity.putExtra(ContactPhotoActivity.PARAM_CONTACT,contact);
+                startActivity(goToContactPhotoActivity);
+            }
+        });
 
     }
 
@@ -173,8 +199,21 @@ public class ContactInformationActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
+
                 contact = data.getParcelableExtra(ContactInformationActivity.PARAM_CONTACTINFO);
             }
+        }
+
+        if(requestCode == CameraHelper.CAMERA_RESULT_OK){
+            if(resultCode==RESULT_OK){
+                contact.setPhoto(pathPhoto);
+                loadImage(contact.getPhoto());
+                AsyncSave save = new AsyncSave(this);
+                save.execute(contact);
+
+            }
+            else
+                pathPhoto = null;
         }
     }
 
@@ -192,4 +231,18 @@ public class ContactInformationActivity extends AppCompatActivity {
         bindActionBar();
         bindRatingBar();
     }
+
+    private void loadImage(String image) {
+        Glide.with(this).load(image).asBitmap().centerCrop().into(new BitmapImageViewTarget(photo) {
+            @Override
+            protected void setResource(Bitmap resource) {
+                Context context = ContactInformationActivity.this;
+                RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(context.getResources(), resource);
+                circularBitmapDrawable.setCircular(true);
+                photo.setImageDrawable(circularBitmapDrawable);
+            }
+        });
+    }
+
+
 }

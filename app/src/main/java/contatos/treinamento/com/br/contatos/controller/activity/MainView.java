@@ -20,11 +20,12 @@ import java.util.List;
 import contatos.treinamento.com.br.contatos.R;
 import contatos.treinamento.com.br.contatos.controller.adapter.NavigationAdapter;
 import contatos.treinamento.com.br.contatos.controller.adapter.ViewPageAdapter;
+import contatos.treinamento.com.br.contatos.controller.interfaces.UpdatableViewPager;
 import contatos.treinamento.com.br.contatos.model.entity.NavigationItem;
 import contatos.treinamento.com.br.contatos.view.slidingtab.SlidingTabLayout;
 
 
-public class MainView extends AppCompatActivity {
+public class MainView extends AppCompatActivity implements UpdatableViewPager {
 
     private Toolbar actionBar;
     private ListView drawerList;
@@ -41,6 +42,7 @@ public class MainView extends AppCompatActivity {
         bindDrawerList();
         bindDrawerLayout();
         bindViewPageAdapter();
+        overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
 
     }
 
@@ -50,24 +52,7 @@ public class MainView extends AppCompatActivity {
 
         viewPager = (ViewPager) findViewById(R.id.pager);
         viewPager.setAdapter(adapter);
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                adapter.notifyDataSetChanged();
-                viewPager.setCurrentItem(position);
-            }
 
-            @Override
-            public void onPageSelected(int position) {
-                adapter.notifyDataSetChanged();
-                viewPager.setCurrentItem(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
         tabs = (SlidingTabLayout) findViewById(R.id.tabs);
         tabs.setDistributeEvenly(true);
         tabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
@@ -165,4 +150,8 @@ public class MainView extends AppCompatActivity {
     }
 
 
+    @Override
+    public void updateViewPager() {
+        adapter.notifyDataSetChanged();
+    }
 }

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +22,8 @@ import java.util.List;
 
 import contatos.treinamento.com.br.contatos.R;
 import contatos.treinamento.com.br.contatos.controller.adapter.ContactListAdapter;
+import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncSave;
+import contatos.treinamento.com.br.contatos.controller.interfaces.UpdatableViewPager;
 import contatos.treinamento.com.br.contatos.controller.listener.RecyclerItemClickListener;
 import contatos.treinamento.com.br.contatos.model.ContactBusinessService;
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
@@ -97,7 +98,7 @@ public class ContactFavoriteListFragment extends Fragment {
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        getActivity().getMenuInflater().inflate(R.menu.context_menu_contact_list, menu);
+        getActivity().getMenuInflater().inflate(R.menu.context_menu_contact_list_favorites, menu);
         super.onCreateContextMenu(menu, v, menuInfo);
     }
 
@@ -120,8 +121,19 @@ public class ContactFavoriteListFragment extends Fragment {
             else if (id == R.id.context_menu_call)
                 onMenuCallClick();
 
+            else if (id == R.id.context_menu_remove_favorite)
+                    onMenuRemoveFavoriteClick();
+
         }
         return super.onContextItemSelected(item);
+    }
+
+    private void onMenuRemoveFavoriteClick() {
+        selectedContact.setIsFavorite(false);
+        AsyncSave save = new AsyncSave(getActivity());
+        save.execute(selectedContact);
+        UpdatableViewPager activityWithViewPager = (UpdatableViewPager) getActivity();
+        activityWithViewPager.updateViewPager();
     }
 
     private void onMenuCallClick() {
