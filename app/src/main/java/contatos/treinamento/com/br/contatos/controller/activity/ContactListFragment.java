@@ -127,7 +127,6 @@ public class ContactListFragment extends Fragment implements AsyncInterface{
             else if (id == R.id.context_menu_favorite) {
                 onMenuFavoriteClick();
             }
-
         }
         return super.onContextItemSelected(item);
     }

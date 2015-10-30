@@ -55,7 +55,8 @@
     <string name="title_section3">Section 3</string>
 
     <string name="action_example">Example action</string>
-
+    <string name="menu_editable_item">editableItem</string>
+    <string name="lbl_editable_item">Editable item2</string>
 
 
 </resources>

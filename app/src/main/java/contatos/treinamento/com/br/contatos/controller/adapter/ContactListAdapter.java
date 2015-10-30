@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +24,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import contatos.treinamento.com.br.contatos.R;
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
@@ -56,15 +58,14 @@ public class ContactListAdapter extends
 
     @Override
     public void onBindViewHolder(final ContactListAdapter.ViewHolder viewHolder, int i) {
-        Contact contact = contacts.get(i);
+        final Contact contact = contacts.get(i);
 
         viewHolder.itemView.setLongClickable(true);
         TextView textViewName = viewHolder.textViewName;
         final ImageView imageViewItemList = viewHolder.photo;
         TextView textViewLastModified = viewHolder.textViewLastModified;
 
-
-        if (contact.getPhoto() != null) {
+        try {
             Glide.with(context).load(contact.getPhoto()).asBitmap().centerCrop().into(new BitmapImageViewTarget(imageViewItemList) {
                 protected void setResource(Bitmap resource) {
                     //USANDO ROUNDEDBITMAPDRAWABLE A IMAGEM SERÁ MOSTRADA APENAS EM UM FORMATO CIRCULAR, PORÉM O IMAGEVIEW CONTINUA QUADRADO
@@ -73,9 +74,17 @@ public class ContactListAdapter extends
                     imageViewItemList.setImageDrawable(circularBitmapDrawable);
                 }
             });
-        } else {
-            imageViewItemList.setImageBitmap(null);
+        } catch (Exception e) {
+            Glide.with(context).load(R.mipmap.ic_person).asBitmap().centerCrop().into(new BitmapImageViewTarget(imageViewItemList) {
+                protected void setResource(Bitmap resource) {
+                    RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(context.getResources(), resource);
+                    circularBitmapDrawable.setCircular(true);
+                    imageViewItemList.setImageDrawable(circularBitmapDrawable);
+                    imageViewItemList.setColorFilter(Integer.parseInt(contact.getPhoto()));
+                }
+            });
         }
+
 
 //        imageViewItemList.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -95,28 +104,27 @@ public class ContactListAdapter extends
 //        });
 
 
-        textViewName.setText(contact.getName());
+            textViewName.setText(contact.getName());
 
 
-        Date currentDate = null;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        try {
-            currentDate = simpleDateFormat.parse(FormHelper.convertDateToString(new Date()));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        long diffDate = ((contact.getLastDateModified().getTime()- currentDate.getTime())/1000/60/60/24)*-1;
-        if(diffDate==0){
-            textViewLastModified.setText(context.getString(R.string.lbl_today));
-        }
-        else if(diffDate>0&&diffDate<=1){
-            textViewLastModified.setText(context.getString(R.string.lbl_yesterday));
-        }
-        else{
-            textViewLastModified.setText(FormHelper.convertDateToString(contact.getLastDateModified()));
+            Date currentDate = null;
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            try {
+                currentDate = simpleDateFormat.parse(FormHelper.convertDateToString(new Date()));
+            } catch (ParseException pe) {
+                pe.printStackTrace();
+            }
+            long diffDate = ((contact.getLastDateModified().getTime() - currentDate.getTime()) / 1000 / 60 / 60 / 24) * -1;
+            if (diffDate == 0) {
+                textViewLastModified.setText(context.getString(R.string.lbl_today));
+            } else if (diffDate > 0 && diffDate <= 1) {
+                textViewLastModified.setText(context.getString(R.string.lbl_yesterday));
+            } else {
+                textViewLastModified.setText(FormHelper.convertDateToString(contact.getLastDateModified()));
+            }
+
         }
 
-    }
 
     public Contact getItem(int position) {
         return contacts.get(position);

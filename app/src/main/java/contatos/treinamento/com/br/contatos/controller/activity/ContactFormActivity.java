@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -33,6 +34,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 
 import contatos.treinamento.com.br.contatos.R;
 import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncSave;
@@ -187,14 +189,21 @@ public class ContactFormActivity extends AppCompatActivity {
     }
 
     private void bindPhoto() {
+        Random rnd = new Random();
+        int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
         photo = (ImageView) findViewById(R.id.imageViewContact);
+        photo.setImageDrawable(getResources().getDrawable(R.mipmap.ic_person));
+        if(contact.getPhoto()==null){
+            contact.setPhoto(String.valueOf(color));
+        }
+        photo.setColorFilter(color);
         if (contact.getPhoto() != null)
             loadImage(contact.getPhoto());
 
         photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                path = CameraHelper.takePhotoWithCamera (ContactFormActivity.this);
+                path = CameraHelper.takePhotoWithCamera(ContactFormActivity.this);
             }
         });
     }
@@ -269,7 +278,7 @@ public class ContactFormActivity extends AppCompatActivity {
                 onAcceptMenuClick();
                 break;
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                finish();
                 return true;
         }
 

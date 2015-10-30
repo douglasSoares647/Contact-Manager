@@ -4,7 +4,9 @@
 
     <item
         android:title="@string/menu_edit"
-        android:id="@+id/menu_info_edit">
+        android:id="@+id/menu_info_edit"
+        app:showAsAction="always"
+        android:icon="@mipmap/ic_pen_edit">
     </item>
 
     <item
@@ -13,10 +15,12 @@
     </item>
 
     <item
-        android:title="@string/lbl_take_photo"
-        android:id="@+id/menu_info_take_photo"
-        android:icon="@mipmap/ic_camera_menu"
-        app:showAsAction="always">
+        android:title="@string/lbl_add_favorites"
+        android:checkable="true"
+        android:id="@+id/menu_info_add_favorite"
+        app:showAsAction="always"
+        android:icon="@mipmap/ic_empty_star">
     </item>
+
 
 </menu>

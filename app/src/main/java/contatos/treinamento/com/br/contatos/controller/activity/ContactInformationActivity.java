@@ -26,6 +26,7 @@ import java.text.Normalizer;
 
 import contatos.treinamento.com.br.contatos.R;
 import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncSave;
+import contatos.treinamento.com.br.contatos.controller.interfaces.UpdatableViewPager;
 import contatos.treinamento.com.br.contatos.model.ContactBusinessService;
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
 import contatos.treinamento.com.br.contatos.model.util.CameraHelper;
@@ -36,6 +37,7 @@ import contatos.treinamento.com.br.contatos.model.util.FormHelper;
  */
 public class ContactInformationActivity extends AppCompatActivity {
 
+    public static final int CODE_FROM_PHOTO_ACTIVITY = 3;
     private TextView textViewEmail;
     private TextView textViewTelephone;
     private TextView textViewWebSite;
@@ -43,8 +45,8 @@ public class ContactInformationActivity extends AppCompatActivity {
     private RatingBar ratingBar;
     private TextView textViewBirth;
     private ImageView photo;
-    private String pathPhoto;
 
+    private Menu menu;
     private ImageView iconInformation;
 
     private Contact contact;
@@ -60,16 +62,11 @@ public class ContactInformationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_iformation);
         initContact();
-        bindImageIcon();
-        bindTextViewTelephone();
-        bindTextViewEmail();
-        bindTextViewWebSite();
-        bindActionBar();
-        bindRatingBar();
-        bindTextViewBirth();
+        refreshContact();
 
         overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
     }
+
 
     private void bindRatingBar() {
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
@@ -78,8 +75,8 @@ public class ContactInformationActivity extends AppCompatActivity {
 
     private void bindTextViewBirth() {
         textViewBirth = (TextView) findViewById(R.id.textViewContactInfoBirth);
-        if(contact.getBirth()!=null)
-        textViewBirth.setText(FormHelper.convertDateToString(contact.getBirth()));
+        if (contact.getBirth() != null)
+            textViewBirth.setText(FormHelper.convertDateToString(contact.getBirth()));
         else
             textViewBirth.setText("");
 
@@ -101,6 +98,13 @@ public class ContactInformationActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_contact_information, menu);
+        this.menu = menu;
+        MenuItem menuItemAddFavorite = this.menu.findItem(R.id.menu_info_add_favorite);
+        if(contact.isFavorite()){
+            menuItemAddFavorite.setIcon(R.mipmap.ic_filled_star);
+            menuItemAddFavorite.setChecked(true);
+        }
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -114,18 +118,19 @@ public class ContactInformationActivity extends AppCompatActivity {
         } else if (id == R.id.menu_info_delete) {
             onMenuDeleteClick();
         } else if (id == android.R.id.home) {
-            NavUtils.navigateUpFromSameTask(this);
+            AsyncSave save = new AsyncSave(this);
+            save.execute(contact);
+            finish();
             return true;
-        }
-        else if (id == R.id.menu_info_take_photo){
-            onMenuTakePhotoClick();
+        } else if (id == R.id.menu_info_add_favorite) {
+            item.setChecked(!item.isChecked());
+            contact.setIsFavorite(!item.isChecked());
+            item.setIcon(item.isChecked() ? R.mipmap.ic_filled_star : R.mipmap.ic_empty_star);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void onMenuTakePhotoClick() {
-
-    }
 
     private void onMenuDeleteClick() {
         new AlertDialog.Builder(this)
@@ -167,9 +172,9 @@ public class ContactInformationActivity extends AppCompatActivity {
         actionBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent goToContactPhotoActivity = new Intent(ContactInformationActivity.this,ContactPhotoActivity.class);
-                goToContactPhotoActivity.putExtra(ContactPhotoActivity.PARAM_CONTACT,contact);
-                startActivity(goToContactPhotoActivity);
+                Intent goToContactPhotoActivity = new Intent(ContactInformationActivity.this, ContactPhotoActivity.class);
+                goToContactPhotoActivity.putExtra(ContactPhotoActivity.PARAM_CONTACT, contact);
+                startActivityForResult(goToContactPhotoActivity, CODE_FROM_PHOTO_ACTIVITY);
             }
         });
 
@@ -183,8 +188,7 @@ public class ContactInformationActivity extends AppCompatActivity {
 
     private void bindTextViewTelephone() {
         textViewTelephone = (TextView) findViewById(R.id.textViewContactInfoTelephone);
-
-        textViewTelephone.setText(contact.getTelephone() == null ? "" : contact.getTelephone().replace("|", " "));
+        textViewTelephone.setText(contact.getTelephone() == null ? "" : contact.getTelephone());
     }
 
 
@@ -196,24 +200,16 @@ public class ContactInformationActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-
                 contact = data.getParcelableExtra(ContactInformationActivity.PARAM_CONTACTINFO);
             }
         }
 
-        if(requestCode == CameraHelper.CAMERA_RESULT_OK){
-            if(resultCode==RESULT_OK){
-                contact.setPhoto(pathPhoto);
-                loadImage(contact.getPhoto());
-                AsyncSave save = new AsyncSave(this);
-                save.execute(contact);
-
+        if (requestCode == CODE_FROM_PHOTO_ACTIVITY) {
+            if (resultCode == RESULT_OK) {
+                contact = data.getParcelableExtra(ContactPhotoActivity.PARAM_CONTACT);
             }
-            else
-                pathPhoto = null;
         }
     }
 
@@ -230,18 +226,7 @@ public class ContactInformationActivity extends AppCompatActivity {
         bindTextViewWebSite();
         bindActionBar();
         bindRatingBar();
-    }
-
-    private void loadImage(String image) {
-        Glide.with(this).load(image).asBitmap().centerCrop().into(new BitmapImageViewTarget(photo) {
-            @Override
-            protected void setResource(Bitmap resource) {
-                Context context = ContactInformationActivity.this;
-                RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(context.getResources(), resource);
-                circularBitmapDrawable.setCircular(true);
-                photo.setImageDrawable(circularBitmapDrawable);
-            }
-        });
+        bindTextViewBirth();
     }
 
 
