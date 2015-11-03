@@ -3,15 +3,12 @@ package contatos.treinamento.com.br.contatos.model.persistence;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
-import android.provider.ContactsContract;
 
 import java.io.File;
 import java.util.List;
 
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
-import contatos.treinamento.com.br.contatos.model.util.FormHelper;
-import contatos.treinamento.com.br.contatos.model.util.ListHelper;
+import contatos.treinamento.com.br.contatos.model.util.BitmapHelper;
 
 /**
  * Created by c1284521 on 14/10/2015.
@@ -55,10 +52,10 @@ public final class ContactRepository {
         String where = ContactContract.ID + " = ?";
         String[] values = {String.valueOf(contact.getId())};
 
-        db.delete(ContactContract.TABLE,where,values);
+        db.delete(ContactContract.TABLE, where, values);
 
         if(contact.getPhoto()!=null)
-        ListHelper.DeleteRecursive(new File(contact.getPhoto()));
+        BitmapHelper.deleteRecursive(new File(contact.getPhoto()));
 
         db.close();
         databaseHelper.close();

@@ -2,22 +2,14 @@ package contatos.treinamento.com.br.contatos.controller.activity;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.ContactsContract;
-import android.provider.MediaStore;
-import android.support.v4.app.NavUtils;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,9 +20,6 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
-
 import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
@@ -39,6 +28,7 @@ import java.util.Random;
 import contatos.treinamento.com.br.contatos.R;
 import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncSave;
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
+import contatos.treinamento.com.br.contatos.model.util.BitmapHelper;
 import contatos.treinamento.com.br.contatos.model.util.CameraHelper;
 import contatos.treinamento.com.br.contatos.model.util.FormHelper;
 
@@ -192,13 +182,13 @@ public class ContactFormActivity extends AppCompatActivity {
         Random rnd = new Random();
         int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
         photo = (ImageView) findViewById(R.id.imageViewContact);
-        photo.setImageDrawable(getResources().getDrawable(R.mipmap.ic_person));
         if(contact.getPhoto()==null){
             contact.setPhoto(String.valueOf(color));
+            photo.setImageDrawable(getResources().getDrawable(R.mipmap.ic_person));
+            photo.setColorFilter(color);
         }
-        photo.setColorFilter(color);
         if (contact.getPhoto() != null)
-            loadImage(contact.getPhoto());
+            BitmapHelper.loadImage(this, photo, contact.getPhoto());
 
         photo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -215,8 +205,9 @@ public class ContactFormActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CameraHelper.CAMERA_RESULT_OK) {
             if (resultCode == Activity.RESULT_OK) {
+                BitmapHelper.deleteRecursive(new File(contact.getPhoto()));
                 contact.setPhoto(path);
-                loadImage(path);
+                BitmapHelper.loadImage(this,photo,path);
 
             } else {
                 path = null;
@@ -250,17 +241,6 @@ public class ContactFormActivity extends AppCompatActivity {
         }
     }
 
-    private void loadImage(String image) {
-        Glide.with(this).load(image).asBitmap().centerCrop().into(new BitmapImageViewTarget(photo) {
-            @Override
-            protected void setResource(Bitmap resource) {
-                Context context = ContactFormActivity.this;
-                RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(context.getResources(), resource);
-                circularBitmapDrawable.setCircular(true);
-                photo.setImageDrawable(circularBitmapDrawable);
-            }
-        });
-    }
 
 
     @Override
@@ -289,7 +269,7 @@ public class ContactFormActivity extends AppCompatActivity {
         bindContact();
         if (!FormHelper.validateForm(editTextName, editTextTelephone, editTextEmail) &&
                 !FormHelper.validateEmail(editTextEmail,contact.getId()) && !FormHelper.validateName(editTextName,contact.getId())) {
-            AsyncSave asyncSave = new AsyncSave(this);
+            AsyncSave asyncSave = new AsyncSave();
             asyncSave.execute(contact);
 
             Intent sendContactInfoToPreviousActivity = new Intent(this,ContactInformationActivity.class);

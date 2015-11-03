@@ -3,6 +3,7 @@ package contatos.treinamento.com.br.contatos.controller.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -33,6 +34,7 @@ import contatos.treinamento.com.br.contatos.model.entity.Contact;
 
 public class ContactListFragment extends Fragment implements AsyncInterface{
 
+    private static final int RESULTCONTACTINFO = 20;
     private RecyclerView contactList;
     private Contact selectedContact;
     private FloatingActionButton fab;
@@ -62,7 +64,6 @@ public class ContactListFragment extends Fragment implements AsyncInterface{
 
     private void bindFloatingActionButton() {
         fab = (FloatingActionButton) contactListFragmentView.findViewById(R.id.fab);
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,7 +87,7 @@ public class ContactListFragment extends Fragment implements AsyncInterface{
                         selectedContact = adapter.getItem(position);
                         Intent goToContactInfo = new Intent(getActivity(), ContactInformationActivity.class);
                         goToContactInfo.putExtra(ContactInformationActivity.PARAM_CONTACTINFO, selectedContact);
-                        startActivity(goToContactInfo);
+                        startActivityForResult(goToContactInfo, ContactListFragment.RESULTCONTACTINFO);
                     }
 
                     @Override
@@ -109,7 +110,6 @@ public class ContactListFragment extends Fragment implements AsyncInterface{
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-
         if (getUserVisibleHint()) {
             int id = item.getItemId();
 
@@ -133,8 +133,7 @@ public class ContactListFragment extends Fragment implements AsyncInterface{
 
     private void onMenuFavoriteClick() {
         selectedContact.setIsFavorite(true);
-        AsyncSave save = new AsyncSave(getActivity());
-        save.execute(selectedContact);
+        ContactBusinessService.save(selectedContact);
 
         UpdatableViewPager activityWithViewPager = (UpdatableViewPager) getActivity();
         activityWithViewPager.updateViewPager();
@@ -170,9 +169,8 @@ public class ContactListFragment extends Fragment implements AsyncInterface{
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         ContactBusinessService.delete(selectedContact);
-                        contacts.remove(selectedContact);
-                        selectedContact = null;
-                        setAdapter();
+                        UpdatableViewPager updatableViewPager = (UpdatableViewPager) getActivity();
+                        updatableViewPager.updateViewPager();
                     }
                 }).setTitle(getString(R.string.dialog_confirm)).create().show();
 
@@ -200,4 +198,15 @@ public class ContactListFragment extends Fragment implements AsyncInterface{
         adapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == ContactListFragment.RESULTCONTACTINFO){
+            if(resultCode == getActivity().RESULT_OK){
+                UpdatableViewPager activityWithViewPager = (UpdatableViewPager) getActivity();
+                activityWithViewPager.updateViewPager();
+            }
+        }
+    }
 }

@@ -81,6 +81,7 @@ public class ContactSearchActivity extends AppCompatActivity implements AsyncInt
         setSupportActionBar(actionBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         editTextSearch = (EditText) actionBar.findViewById(R.id.editTextToolBarFind);
+        editTextSearch.setBackgroundTintList(null);
         editTextSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

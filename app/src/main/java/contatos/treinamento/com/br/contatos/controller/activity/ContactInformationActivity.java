@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
+import java.io.File;
 import java.text.Normalizer;
 
 import contatos.treinamento.com.br.contatos.R;
@@ -29,6 +30,7 @@ import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncSave;
 import contatos.treinamento.com.br.contatos.controller.interfaces.UpdatableViewPager;
 import contatos.treinamento.com.br.contatos.model.ContactBusinessService;
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
+import contatos.treinamento.com.br.contatos.model.util.BitmapHelper;
 import contatos.treinamento.com.br.contatos.model.util.CameraHelper;
 import contatos.treinamento.com.br.contatos.model.util.FormHelper;
 
@@ -118,14 +120,15 @@ public class ContactInformationActivity extends AppCompatActivity {
         } else if (id == R.id.menu_info_delete) {
             onMenuDeleteClick();
         } else if (id == android.R.id.home) {
-            AsyncSave save = new AsyncSave(this);
+            AsyncSave save = new AsyncSave();
             save.execute(contact);
+            setResult(RESULT_OK);
             finish();
             return true;
         } else if (id == R.id.menu_info_add_favorite) {
             item.setChecked(!item.isChecked());
-            contact.setIsFavorite(!item.isChecked());
-            item.setIcon(item.isChecked() ? R.mipmap.ic_filled_star : R.mipmap.ic_empty_star);
+            contact.setIsFavorite(item.isChecked());
+            item.setIcon(item.isChecked()? R.mipmap.ic_filled_star : R.mipmap.ic_empty_star);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -159,13 +162,10 @@ public class ContactInformationActivity extends AppCompatActivity {
 
         actionBar = (Toolbar) view.findViewById(R.id.actionBarWithImage);
         actionBar.setTitle("");
-        TextView title = (TextView) actionBar.findViewById(R.id.toolbar_title);
+        TextView title = (TextView) view.findViewById(R.id.toolbar_title);
         title.setText(contact.getName());
-        if (contact.getPhoto() != null) {
-            Glide.with(this).load(contact.getPhoto()).fitCenter().centerCrop().into(photo);
-        } else {
-            photo.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        }
+        BitmapHelper.loadFullImage(this, photo, contact.getPhoto());
+
         setSupportActionBar(actionBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -229,5 +229,10 @@ public class ContactInformationActivity extends AppCompatActivity {
         bindTextViewBirth();
     }
 
-
+    @Override
+    public void onBackPressed() {
+        AsyncSave save = new AsyncSave();
+        save.execute(contact);
+        super.onBackPressed();
+    }
 }

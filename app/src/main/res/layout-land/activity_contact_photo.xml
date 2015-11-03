@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000"
-    android:orientation="vertical">
+    android:background="#000">
 
-
-    <include
-        android:id="@+id/toolbar_contact_photo"
-        layout="@layout/toolbar"></include>
-
-    <ImageView
-        android:id="@+id/imageViewContactPhoto"
-        android:layout_width="400dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal" />
+        android:orientation="vertical">
 
-</LinearLayout>
+        <include
+            android:id="@+id/toolbar_contact_photo"
+            layout="@layout/toolbar"></include>
+
+        <ImageView
+            android:id="@+id/imageViewContactPhoto"
+            android:layout_width="400dp"
+            android:layout_height="400dp"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
+</ScrollView>

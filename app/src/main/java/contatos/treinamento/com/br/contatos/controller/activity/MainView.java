@@ -49,7 +49,6 @@ public class MainView extends AppCompatActivity implements UpdatableViewPager {
     @Override
     protected void onResume() {
         updateViewPager();
-        viewPager.setAdapter(adapter);
         super.onResume();
     }
 

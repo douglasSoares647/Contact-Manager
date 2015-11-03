@@ -3,8 +3,11 @@ package contatos.treinamento.com.br.contatos.controller.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -15,15 +18,18 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
+import java.io.File;
 import java.util.Date;
 
 import contatos.treinamento.com.br.contatos.R;
 import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncSave;
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
+import contatos.treinamento.com.br.contatos.model.util.BitmapHelper;
 import contatos.treinamento.com.br.contatos.model.util.CameraHelper;
 
 /**
@@ -78,11 +84,11 @@ public class ContactPhotoActivity extends AppCompatActivity {
 
         switch (id) {
             case R.id.menu_photo_take_photo:
-                onMenuTakePhotoClick();
+                onMenuChooseOptionClick();
                 break;
 
             case android.R.id.home:
-                AsyncSave save = new AsyncSave(this);
+                AsyncSave save = new AsyncSave();
                 save.execute(contact);
                 Intent sendInfo = new Intent(this, ContactInformationActivity.class );
                 sendInfo.putExtra(ContactPhotoActivity.PARAM_CONTACT, contact);
@@ -93,15 +99,43 @@ public class ContactPhotoActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void onMenuChooseOptionClick() {
+        PopupMenu popupMenu = new PopupMenu(this,findViewById(R.id.menu_photo_take_photo));
+        popupMenu.inflate(R.menu.menu_choose_or_take_photo);
+        popupMenu.show();
+
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                switch (id){
+                    case R.id.menu_choose_from_gallery:
+                        onMenuChooseFromGalleryClick();
+                        break;
+                    case R.id.menu_take_photo:
+                        onMenuTakePhotoClick();
+                }
+                return true;
+            }
+        });
+
+
+    }
+
     private void onMenuTakePhotoClick() {
         pathPhoto = CameraHelper.takePhotoWithCamera(ContactPhotoActivity.this);
     }
 
 
+
+    private void onMenuChooseFromGalleryClick() {
+        CameraHelper.choosePhotoFromGallery(ContactPhotoActivity.this);
+    }
+
+
     private void bindPhoto() {
         photo = (ImageView) findViewById(R.id.imageViewContactPhoto);
-        if (contact.getPhoto() != null)
-            loadImage(contact.getPhoto());
+        BitmapHelper.loadFullImage(this, photo, contact.getPhoto());
 
     }
 
@@ -126,21 +160,26 @@ public class ContactPhotoActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CameraHelper.CAMERA_RESULT_OK) {
             if (resultCode == RESULT_OK) {
+                BitmapHelper.deleteRecursive(new File(contact.getPhoto()));
                 contact.setPhoto(pathPhoto);
                 contact.setLastDateModified(new Date());
-                loadImage(contact.getPhoto());
-
+                BitmapHelper.loadFullImage(this,photo,contact.getPhoto());
             }
             else
                 pathPhoto = null;
         }
 
+        if(requestCode == CameraHelper.GALLERY_RESULT_OK){
+            if(resultCode == RESULT_OK){
+                Uri selectedImageUri = data.getData();
+                contact.setPhoto(getpathring(selectedImageUri));
+                BitmapHelper.loadFullImage(this,photo,contact.getPhoto());
+
+            }
+        }
+
     }
 
-
-    private void loadImage(String image) {
-            Glide.with(this).load(image).fitCenter().centerCrop().animate(R.anim.abc_grow_fade_in_from_bottom).into(photo);
-    }
 
 
     @Override
@@ -155,5 +194,36 @@ public class ContactPhotoActivity extends AppCompatActivity {
         if(savedInstanceState != null){
             contact = savedInstanceState.getParcelable(ContactPhotoActivity.PARAM_CONTACT);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        AsyncSave save = new AsyncSave();
+        save.execute(contact);
+        Intent sendInfo = new Intent(this, ContactInformationActivity.class );
+        sendInfo.putExtra(ContactPhotoActivity.PARAM_CONTACT, contact);
+        setResult(RESULT_OK, sendInfo);
+
+        super.onBackPressed();
+    }
+
+
+
+
+    private String getpathring(Uri selectedImageUri) {
+        Cursor cursor = getContentResolver().query(selectedImageUri, null, null, null, null);
+        cursor.moveToFirst();
+        String document_id = cursor.getString(0);
+        document_id = document_id.substring(document_id.lastIndexOf(":")+1);
+        cursor.close();
+
+        cursor = getContentResolver().query(
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                null, MediaStore.Images.Media._ID + " = ? ", new String[]{document_id}, null);
+        cursor.moveToFirst();
+        String pathFromUri = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+        cursor.close();
+
+        return pathFromUri;
     }
 }

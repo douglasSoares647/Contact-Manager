@@ -57,6 +57,7 @@
     <string name="action_example">Example action</string>
     <string name="menu_editable_item">editableItem</string>
     <string name="lbl_editable_item">Editable item2</string>
+    <string name="menu_take_photo">Take photo</string>
 
 
 </resources>

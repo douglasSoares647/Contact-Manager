@@ -20,6 +20,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
+import java.io.File;
+import java.io.FileReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,6 +30,7 @@ import java.util.Random;
 
 import contatos.treinamento.com.br.contatos.R;
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
+import contatos.treinamento.com.br.contatos.model.util.BitmapHelper;
 import contatos.treinamento.com.br.contatos.model.util.FormHelper;
 
 /**
@@ -65,25 +68,8 @@ public class ContactListAdapter extends
         final ImageView imageViewItemList = viewHolder.photo;
         TextView textViewLastModified = viewHolder.textViewLastModified;
 
-        try {
-            Glide.with(context).load(contact.getPhoto()).asBitmap().centerCrop().into(new BitmapImageViewTarget(imageViewItemList) {
-                protected void setResource(Bitmap resource) {
-                    //USANDO ROUNDEDBITMAPDRAWABLE A IMAGEM SERÁ MOSTRADA APENAS EM UM FORMATO CIRCULAR, PORÉM O IMAGEVIEW CONTINUA QUADRADO
-                    RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(context.getResources(), resource);
-                    circularBitmapDrawable.setCircular(true);
-                    imageViewItemList.setImageDrawable(circularBitmapDrawable);
-                }
-            });
-        } catch (Exception e) {
-            Glide.with(context).load(R.mipmap.ic_person).asBitmap().centerCrop().into(new BitmapImageViewTarget(imageViewItemList) {
-                protected void setResource(Bitmap resource) {
-                    RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(context.getResources(), resource);
-                    circularBitmapDrawable.setCircular(true);
-                    imageViewItemList.setImageDrawable(circularBitmapDrawable);
-                    imageViewItemList.setColorFilter(Integer.parseInt(contact.getPhoto()));
-                }
-            });
-        }
+
+        BitmapHelper.loadImage(context,imageViewItemList,contact.getPhoto());
 
 
 //        imageViewItemList.setOnClickListener(new View.OnClickListener() {

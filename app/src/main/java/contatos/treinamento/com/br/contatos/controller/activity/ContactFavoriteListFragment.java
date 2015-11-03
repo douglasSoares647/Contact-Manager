@@ -32,6 +32,7 @@ import contatos.treinamento.com.br.contatos.model.entity.Contact;
  * Created by c1284521 on 28/10/2015.
  */
 public class ContactFavoriteListFragment extends Fragment {
+    private static final int RESULTCONTACTINFO = 20;
     private RecyclerView contactList;
     private Contact selectedContact;
     private FloatingActionButton fab;
@@ -58,14 +59,14 @@ public class ContactFavoriteListFragment extends Fragment {
 
     private void bindFloatingActionButton() {
         fab = (FloatingActionButton) contactListFragmentView.findViewById(R.id.fab);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent goToContactForm = new Intent(getActivity(), ContactFormActivity.class);
-                startActivity(goToContactForm);
-            }
-        });
+        fab.setVisibility(View.INVISIBLE);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent goToContactForm = new Intent(getActivity(), ContactFormActivity.class);
+//                startActivity(goToContactForm);
+//            }
+//        });
     }
 
     private void bindContactList() {
@@ -82,7 +83,7 @@ public class ContactFavoriteListFragment extends Fragment {
                         selectedContact = adapter.getItem(position);
                         Intent goToContactInfo = new Intent(getActivity(), ContactInformationActivity.class);
                         goToContactInfo.putExtra(ContactInformationActivity.PARAM_CONTACTINFO, selectedContact);
-                        startActivity(goToContactInfo);
+                        startActivityForResult(goToContactInfo, ContactFavoriteListFragment.RESULTCONTACTINFO);
                     }
 
                     @Override
@@ -130,7 +131,7 @@ public class ContactFavoriteListFragment extends Fragment {
 
     private void onMenuRemoveFavoriteClick() {
         selectedContact.setIsFavorite(false);
-        AsyncSave save = new AsyncSave(getActivity());
+        AsyncSave save = new AsyncSave();
         save.execute(selectedContact);
         UpdatableViewPager activityWithViewPager = (UpdatableViewPager) getActivity();
         activityWithViewPager.updateViewPager();
@@ -195,4 +196,16 @@ public class ContactFavoriteListFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == ContactFavoriteListFragment.RESULTCONTACTINFO){
+            if(resultCode == getActivity().RESULT_OK){
+                UpdatableViewPager activityWithViewPager = (UpdatableViewPager) getActivity();
+                activityWithViewPager.updateViewPager();
+            }
+        }
+    }
 }

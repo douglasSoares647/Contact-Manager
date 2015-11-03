@@ -8,17 +8,21 @@ import android.provider.MediaStore;
 
 import java.io.File;
 
+import contatos.treinamento.com.br.contatos.controller.activity.ContactPhotoActivity;
+
 /**
  * Created by c1284521 on 29/10/2015.
  */
 public final class CameraHelper  {
 
     public static final int CAMERA_RESULT_OK = 2;
+    public static final int GALLERY_RESULT_OK = 3;
+
     public static String takePhotoWithCamera(Activity context) {
         Intent goToCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         String path;
-        path = Environment.getExternalStorageDirectory().toString() + "/" + System.currentTimeMillis() + ".png";
+        path = Environment.getExternalStorageDirectory().toString() + "/contactsApp/" + System.currentTimeMillis() + ".png";
         File photo = new File(path);
         Uri uri = Uri.fromFile(photo);
 
@@ -26,5 +30,11 @@ public final class CameraHelper  {
 
         context.startActivityForResult(goToCamera, CAMERA_RESULT_OK);
         return path;
+    }
+
+    public static void choosePhotoFromGallery(Activity context) {
+        Intent goToGallery = new Intent(Intent.ACTION_GET_CONTENT);
+        goToGallery.setType("image/*");
+        context.startActivityForResult(goToGallery, GALLERY_RESULT_OK);
     }
 }
