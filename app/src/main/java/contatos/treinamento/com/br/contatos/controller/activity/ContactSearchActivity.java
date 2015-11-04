@@ -3,6 +3,7 @@ package contatos.treinamento.com.br.contatos.controller.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v4.app.NotificationCompatSideChannelService;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -38,6 +39,7 @@ public class ContactSearchActivity extends AppCompatActivity implements AsyncInt
 
     private Contact selectedContact;
     private EditText editTextSearch;
+    private List<Contact> contacts = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +48,6 @@ public class ContactSearchActivity extends AppCompatActivity implements AsyncInt
         setContentView(R.layout.activity_search_contact);
         bindContactList();
         bindActionBar();
-
-        searchDatabase();
 
         overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
     }
@@ -90,15 +90,11 @@ public class ContactSearchActivity extends AppCompatActivity implements AsyncInt
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
                 updateListByName(editTextSearch.getText().toString());
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (editTextSearch.getText().toString().equals("")) {
-                    searchDatabase();
-                }
             }
         });
 
@@ -136,7 +132,12 @@ public class ContactSearchActivity extends AppCompatActivity implements AsyncInt
 
 
     private void updateListByName(String name){
-        List<Contact> contactsByName = ContactBusinessService.findContactsByName(name);
+        List<Contact> contactsByName = new ArrayList<>();
+        for(Contact contactByName : contacts){
+            if(contactByName.getName().toLowerCase().startsWith(name.toLowerCase())){
+                contactsByName.add(contactByName);
+            }
+        }
         setAdapter(contactsByName);
     }
 
@@ -148,20 +149,20 @@ public class ContactSearchActivity extends AppCompatActivity implements AsyncInt
 
     @Override
     public void refreshList(List<Contact> contacts) {
+        this.contacts = contacts;
         setAdapter(contacts);
     }
 
     @Override
     protected void onResume() {
+
         String name = editTextSearch.getText().toString();
-
-        if (!name.isEmpty())
+       if(!name.isEmpty())
         updateListByName(name);
-        else {
+        else
             searchDatabase();
-        }
-
         super.onResume();
 
     }
+
 }

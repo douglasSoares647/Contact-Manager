@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -44,12 +45,16 @@ public class ContactInformationActivity extends AppCompatActivity {
     private TextView textViewTelephone;
     private TextView textViewWebSite;
     private Toolbar actionBar;
-    private RatingBar ratingBar;
     private TextView textViewBirth;
     private ImageView photo;
 
     private Menu menu;
-    private ImageView iconInformation;
+
+    private ImageView iconEmail;
+    private ImageView iconTelephone;
+    private ImageView iconBirth;
+    private ImageView iconWebSite;
+
 
     private Contact contact;
 
@@ -70,11 +75,6 @@ public class ContactInformationActivity extends AppCompatActivity {
     }
 
 
-    private void bindRatingBar() {
-        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
-        ratingBar.setRating(contact.getRating() == null ? 0 : contact.getRating());
-    }
-
     private void bindTextViewBirth() {
         textViewBirth = (TextView) findViewById(R.id.textViewContactInfoBirth);
         if (contact.getBirth() != null)
@@ -84,9 +84,27 @@ public class ContactInformationActivity extends AppCompatActivity {
 
     }
 
-    private void bindImageIcon() {
-        iconInformation = (ImageView) findViewById(R.id.iconInformation);
-        iconInformation.setColorFilter(getResources().getColor(R.color.colorPrimary));
+    private void bindIcons() {
+        iconEmail = (ImageView) findViewById(R.id.iconEmail);
+        iconTelephone = (ImageView) findViewById(R.id.iconTelephone);
+        iconBirth = (ImageView) findViewById(R.id.iconBirth);
+        iconWebSite = (ImageView) findViewById(R.id.iconWebSite);
+
+        Window window = getWindow();
+        if (!new File(contact.getPhoto()).exists()) {
+            window.setStatusBarColor(Integer.parseInt(contact.getPhoto()));
+            iconEmail.setColorFilter(Integer.parseInt(contact.getPhoto()));
+            iconTelephone.setColorFilter(Integer.parseInt(contact.getPhoto()));
+            iconBirth.setColorFilter(Integer.parseInt(contact.getPhoto()));
+            iconWebSite.setColorFilter(Integer.parseInt(contact.getPhoto()));
+        } else {
+            window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+            iconEmail.setColorFilter(getResources().getColor(R.color.colorPrimary));
+            iconTelephone.setColorFilter(getResources().getColor(R.color.colorPrimary));
+            iconBirth.setColorFilter(getResources().getColor(R.color.colorPrimary));
+            iconWebSite.setColorFilter(getResources().getColor(R.color.colorPrimary));
+        }
+
     }
 
     private void initContact() {
@@ -102,7 +120,7 @@ public class ContactInformationActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_contact_information, menu);
         this.menu = menu;
         MenuItem menuItemAddFavorite = this.menu.findItem(R.id.menu_info_add_favorite);
-        if(contact.isFavorite()){
+        if (contact.isFavorite()) {
             menuItemAddFavorite.setIcon(R.mipmap.ic_filled_star);
             menuItemAddFavorite.setChecked(true);
         }
@@ -122,13 +140,15 @@ public class ContactInformationActivity extends AppCompatActivity {
         } else if (id == android.R.id.home) {
             AsyncSave save = new AsyncSave();
             save.execute(contact);
-            setResult(RESULT_OK);
+            Intent sendInfo = new Intent();
+            sendInfo.putExtra(ContactInformationActivity.PARAM_CONTACTINFO, contact);
+            setResult(RESULT_OK, sendInfo);
             finish();
             return true;
         } else if (id == R.id.menu_info_add_favorite) {
             item.setChecked(!item.isChecked());
             contact.setIsFavorite(item.isChecked());
-            item.setIcon(item.isChecked()? R.mipmap.ic_filled_star : R.mipmap.ic_empty_star);
+            item.setIcon(item.isChecked() ? R.mipmap.ic_filled_star : R.mipmap.ic_empty_star);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -211,6 +231,7 @@ public class ContactInformationActivity extends AppCompatActivity {
                 contact = data.getParcelableExtra(ContactPhotoActivity.PARAM_CONTACT);
             }
         }
+
     }
 
     @Override
@@ -220,12 +241,11 @@ public class ContactInformationActivity extends AppCompatActivity {
     }
 
     private void refreshContact() {
-        bindImageIcon();
+        bindIcons();
         bindTextViewTelephone();
         bindTextViewEmail();
         bindTextViewWebSite();
         bindActionBar();
-        bindRatingBar();
         bindTextViewBirth();
     }
 
@@ -233,6 +253,9 @@ public class ContactInformationActivity extends AppCompatActivity {
     public void onBackPressed() {
         AsyncSave save = new AsyncSave();
         save.execute(contact);
+        Intent sendInfo = new Intent();
+        sendInfo.putExtra(ContactInformationActivity.PARAM_CONTACTINFO, contact);
+        setResult(RESULT_OK, sendInfo);
         super.onBackPressed();
     }
 }

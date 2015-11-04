@@ -1,91 +1,183 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    android:id="@+id/scrollViewContactInfo"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto">
-<RelativeLayout
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <include
-        android:id="@+id/actionBarContactInfo"
-        layout="@layout/toolbar_information"></include>
-
-
-    <android.support.v7.widget.CardView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="7dp"
-        android:layout_below="@id/actionBarContactInfo"
-        android:layout_marginBottom="10dp"
-        card_view:cardCornerRadius="3dp"
-        card_view:cardElevation="2dp"
-        card_view:contentPadding="10dp">
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/actionBarContactInfo"
+            layout="@layout/toolbar_information"></include>
 
 
-        <RelativeLayout
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardViewEmail"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:id="@+id/iconInformation"
-                android:src="@mipmap/ic_information" />
+            android:layout_height="wrap_content"
+            android:layout_below="@id/actionBarContactInfo"
+            android:layout_margin="7dp"
+            android:layout_marginBottom="10dp"
+            card_view:cardCornerRadius="3dp"
+            card_view:cardElevation="2dp"
+            card_view:contentPadding="10dp">
 
 
-            <TextView
-                android:id="@+id/textViewContactInfoEmail"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:text="@string/lbl_email_contact_list"
-                android:textSize="15dp" />
+                android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/textViewContactInfoTelephone"
+                <ImageView
+                    android:id="@+id/iconEmail"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/ic_communication_email" />
+
+
+                <TextView
+                    android:id="@+id/textViewContactInfoEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_horizontal"
+                    android:text="@string/lbl_email_contact_list"
+                    android:textSize="15dp" />
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardViewTelephone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cardViewEmail"
+            android:layout_margin="7dp"
+            android:layout_marginBottom="10dp"
+            card_view:cardCornerRadius="3dp"
+            card_view:cardElevation="2dp"
+            card_view:contentPadding="10dp">
+
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/textViewContactInfoEmail"
-                android:gravity="center_horizontal"
-                android:text="@string/lbl_telephone_contact_list"
-                android:textSize="15dp" />
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/iconTelephone"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/ic_maps_local_phone" />
 
 
-            <TextView
-                android:id="@+id/textViewContactInfoWebSite"
+                <TextView
+                    android:id="@+id/textViewContactInfoTelephone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_horizontal"
+                    android:text="@string/lbl_telephone_contact_list"
+                    android:textSize="15dp" />
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardViewWebSite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cardViewTelephone"
+            android:layout_margin="7dp"
+            android:layout_marginBottom="10dp"
+            card_view:cardCornerRadius="3dp"
+            card_view:cardElevation="2dp"
+            card_view:contentPadding="10dp">
+
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/textViewContactInfoTelephone"
-                android:gravity="center_horizontal"
-                android:text="@string/lbl_website_contact_list"
-                android:textSize="15dp" />
+                android:layout_height="match_parent">
 
-            <TextView
+                <ImageView
+                    android:id="@+id/iconWebSite"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/ic_hardware_desktop_mac" />
+
+
+                <TextView
+                    android:id="@+id/textViewContactInfoWebSite"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_horizontal"
+                    android:text="@string/lbl_website_contact_list"
+                    android:textSize="15dp" />
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardViewBirth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cardViewWebSite"
+            android:layout_margin="7dp"
+            android:layout_marginBottom="10dp"
+            card_view:cardCornerRadius="3dp"
+            card_view:cardElevation="2dp"
+            card_view:contentPadding="10dp">
+
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textViewContactInfoBirth"
-                android:gravity="center_horizontal"
-                android:layout_below="@id/textViewContactInfoWebSite"
-                android:hint="@string/lbl_birth"
-                android:textSize="15dp"/>
+                android:layout_height="match_parent">
 
-            <RatingBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:numStars="5"
-                android:id="@+id/ratingBar"
-                android:layout_below="@id/textViewContactInfoBirth"
-                style="?android:attr/ratingBarStyleIndicator"
-                android:layout_centerHorizontal="true" />
+                <ImageView
+                    android:id="@+id/iconBirth"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/ic_action_wallet_giftcard" />
 
-        </RelativeLayout>
-    </android.support.v7.widget.CardView>
-</RelativeLayout>
+
+                <TextView
+                    android:id="@+id/textViewContactInfoBirth"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:hint="@string/lbl_birth"
+                    android:textSize="15dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </RelativeLayout>
 </ScrollView>

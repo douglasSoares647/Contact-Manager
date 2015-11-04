@@ -21,15 +21,19 @@ public final class CameraHelper  {
     public static String takePhotoWithCamera(Activity context) {
         Intent goToCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        String path;
-        path = Environment.getExternalStorageDirectory().toString() + "/contactsApp/" + System.currentTimeMillis() + ".png";
-        File photo = new File(path);
+        File folder = new File(Environment.getExternalStorageDirectory().toString() + "/contactsApp/");
+        folder.mkdir();
+
+        String fileName;
+        fileName = System.currentTimeMillis() + ".png";
+        File photo = new File(folder,fileName);
         Uri uri = Uri.fromFile(photo);
 
         goToCamera.putExtra(MediaStore.EXTRA_OUTPUT, uri);
 
         context.startActivityForResult(goToCamera, CAMERA_RESULT_OK);
-        return path;
+        String filePath = folder.toString()+"/"+fileName;
+        return filePath;
     }
 
     public static void choosePhotoFromGallery(Activity context) {

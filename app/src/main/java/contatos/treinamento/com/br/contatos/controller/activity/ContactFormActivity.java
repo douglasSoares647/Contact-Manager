@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -13,6 +14,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -46,6 +49,7 @@ public class ContactFormActivity extends AppCompatActivity {
     private EditText editTextTelephone;
     private RatingBar ratingBar;
     private Toolbar actionBar;
+    private int color;
 
     private Contact contact;
     private String path;
@@ -56,15 +60,15 @@ public class ContactFormActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_form_contact);
-        bindActionBar();
+
+
         initContact();
+        bindActionBar();
         bindPhoto();
         bindEditTexts();
         bindBirth();
         bindBtnImportContact();
-
         bindRatingBar();
         overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
 
@@ -72,7 +76,7 @@ public class ContactFormActivity extends AppCompatActivity {
 
     private void bindBtnImportContact() {
         btnImportContact = (ImageButton) findViewById(R.id.imageButtonImportContact);
-        btnImportContact.setColorFilter(getResources().getColor(R.color.colorPrimary));
+        btnImportContact.setColorFilter(color);
         btnImportContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,8 +94,8 @@ public class ContactFormActivity extends AppCompatActivity {
         editTextBirth.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                if(b)
-                FormHelper.hideKeyboard(ContactFormActivity.this, editTextBirth);
+                if (b)
+                    FormHelper.hideKeyboard(ContactFormActivity.this, editTextBirth);
                 showDatePickerDialog();
             }
         });
@@ -104,18 +108,33 @@ public class ContactFormActivity extends AppCompatActivity {
         });
         editTextBirth.setLongClickable(false);
         btnBirth = (ImageButton) findViewById(R.id.btnBirth);
-        btnBirth .setColorFilter(getResources().getColor(R.color.colorPrimary));
+        btnBirth.setColorFilter(color);
     }
-
-
 
 
     private void bindActionBar() {
         actionBar = (Toolbar) findViewById(R.id.toolbar_form);
-        actionBar.setTitle(getString(R.string.bar_new_contact));
+        Bundle values = getIntent().getExtras();
+
+        if (values != null) {
+            actionBar.setTitle(R.string.app_edit_contact);
+        }else
+            actionBar.setTitle(getString(R.string.bar_new_contact));
 
         setSupportActionBar(actionBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        actionBar.setBackgroundColor(color);
+
+        setStatusBarColor();
+
+    }
+
+    private void setStatusBarColor() {
+        Window window = getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(color);
     }
 
 
@@ -126,10 +145,12 @@ public class ContactFormActivity extends AppCompatActivity {
             ContactListFragment fragment = new ContactListFragment();
             //ESCONDE O FRAGMENT DEPOIS DA TRANSIÇÃO
             getSupportFragmentManager().beginTransaction().add(android.R.id.content, fragment).hide(fragment).commit();
-            this.contact =  values.getParcelable(PARAM_CONTACT);
-            getSupportActionBar().setTitle(getString(R.string.app_edit_contact));
+            this.contact = values.getParcelable(PARAM_CONTACT);
         } else
             contact = new Contact();
+
+        int[] arrayColors = getResources().getIntArray(R.array.androidcolors);
+        color = arrayColors[new Random().nextInt(arrayColors.length)];
     }
 
     private void bindContact() {
@@ -157,8 +178,8 @@ public class ContactFormActivity extends AppCompatActivity {
         editTextWebSite.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                if(b){
-                    FormHelper.showKeyboard(ContactFormActivity.this,editTextWebSite);
+                if (b) {
+                    FormHelper.showKeyboard(ContactFormActivity.this, editTextWebSite);
                 }
             }
         });
@@ -179,10 +200,9 @@ public class ContactFormActivity extends AppCompatActivity {
     }
 
     private void bindPhoto() {
-        Random rnd = new Random();
-        int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+
         photo = (ImageView) findViewById(R.id.imageViewContact);
-        if(contact.getPhoto()==null){
+        if (contact.getPhoto() == null) {
             contact.setPhoto(String.valueOf(color));
             photo.setImageDrawable(getResources().getDrawable(R.mipmap.ic_person));
             photo.setColorFilter(color);
@@ -199,15 +219,13 @@ public class ContactFormActivity extends AppCompatActivity {
     }
 
 
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CameraHelper.CAMERA_RESULT_OK) {
             if (resultCode == Activity.RESULT_OK) {
                 BitmapHelper.deleteRecursive(new File(contact.getPhoto()));
                 contact.setPhoto(path);
-                BitmapHelper.loadImage(this,photo,path);
+                BitmapHelper.loadImage(this, photo, path);
 
             } else {
                 path = null;
@@ -242,7 +260,6 @@ public class ContactFormActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_form, menu);
@@ -268,18 +285,17 @@ public class ContactFormActivity extends AppCompatActivity {
     private void onAcceptMenuClick() {
         bindContact();
         if (!FormHelper.validateForm(editTextName, editTextTelephone, editTextEmail) &&
-                !FormHelper.validateEmail(editTextEmail,contact.getId()) && !FormHelper.validateName(editTextName,contact.getId())) {
+                !FormHelper.validateEmail(editTextEmail, contact.getId()) && !FormHelper.validateName(editTextName, contact.getId())) {
             AsyncSave asyncSave = new AsyncSave();
             asyncSave.execute(contact);
 
-            Intent sendContactInfoToPreviousActivity = new Intent(this,ContactInformationActivity.class);
-            sendContactInfoToPreviousActivity.putExtra(ContactInformationActivity.PARAM_CONTACTINFO,contact);
-            setResult(RESULT_OK,sendContactInfoToPreviousActivity);
+            Intent sendContactInfoToPreviousActivity = new Intent(this, ContactInformationActivity.class);
+            sendContactInfoToPreviousActivity.putExtra(ContactInformationActivity.PARAM_CONTACTINFO, contact);
+            setResult(RESULT_OK, sendContactInfoToPreviousActivity);
             finish();
         }
 
     }
-
 
 
     private void showDatePickerDialog() {

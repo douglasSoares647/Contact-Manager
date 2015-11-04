@@ -51,6 +51,7 @@ public class ContactPhotoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_contact_photo);
+
         if(savedInstanceState==null)
         initContact();
         else

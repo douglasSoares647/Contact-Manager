@@ -60,8 +60,17 @@ public class ContactListAdapter extends
     }
 
     @Override
-    public void onBindViewHolder(final ContactListAdapter.ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(final ViewHolder viewHolder, final int i) {
         final Contact contact = contacts.get(i);
+        viewHolder.itemView.setSelected(contacts.contains(i));
+
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                notifyItemChanged(i);
+            }
+        });
+
 
         viewHolder.itemView.setLongClickable(true);
         TextView textViewName = viewHolder.textViewName;
@@ -129,7 +138,7 @@ public class ContactListAdapter extends
 
         public ViewHolder(View itemView) {
             super(itemView);
-
+            itemView.setClickable(true);
             textViewName = (TextView) itemView.findViewById(R.id.textViewName);
             photo = (ImageView) itemView.findViewById(R.id.imageViewContactItemList);
             textViewLastModified = (TextView) itemView.findViewById(R.id.textViewLastModified);

@@ -32,18 +32,22 @@
                 android:maxLength="25"
                 android:hint="@string/lbl_name"
                 android:inputType="textCapSentences|textPersonName"
-                android:maxLines="1"></EditText>
+                android:maxLines="1"
+                android:layout_toLeftOf="@+id/imageButtonImportContact"
+                android:layout_toStartOf="@+id/imageButtonImportContact"></EditText>
 
             <ImageButton
                 android:id="@+id/imageButtonImportContact"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/editTextName"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_margin="5dp"
                 android:background="#0000"
-                android:src="@mipmap/ic_action_social_person_add" />
+                android:src="@mipmap/ic_action_social_person_add"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_alignTop="@+id/editTextName"
+                android:layout_alignBottom="@+id/editTextName" />
         </RelativeLayout>
 
         <EditText
