@@ -1,9 +1,6 @@
-package contatos.treinamento.com.br.contatos.controller.activity;
+package contatos.treinamento.com.br.contatos.controller.activity.fragments;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -16,22 +13,23 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.List;
 
 import contatos.treinamento.com.br.contatos.R;
+import contatos.treinamento.com.br.contatos.controller.activity.ContactFormActivity;
+import contatos.treinamento.com.br.contatos.controller.activity.ContactInformationActivity;
 import contatos.treinamento.com.br.contatos.controller.adapter.ContactListAdapter;
-import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncSave;
+import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncInterface;
+import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncLoadList;
 import contatos.treinamento.com.br.contatos.controller.interfaces.UpdatableViewPager;
 import contatos.treinamento.com.br.contatos.controller.listener.RecyclerItemClickListener;
-import contatos.treinamento.com.br.contatos.model.ContactBusinessService;
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
+import contatos.treinamento.com.br.contatos.model.util.MenuHelper;
 
-/**
- * Created by c1284521 on 28/10/2015.
- */
-public class ContactFavoriteListFragment extends Fragment {
+
+public class ContactListFragment extends Fragment implements AsyncInterface{
+
     private static final int RESULTCONTACTINFO = 20;
     private RecyclerView contactList;
     private Contact selectedContact;
@@ -39,7 +37,9 @@ public class ContactFavoriteListFragment extends Fragment {
     private List<Contact> contacts;
     private View contactListFragmentView;
 
-    public ContactFavoriteListFragment(){};
+
+    public ContactListFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -53,20 +53,20 @@ public class ContactFavoriteListFragment extends Fragment {
 
     @Override
     public void onResume() {
-        refreshList(ContactBusinessService.loadFavorites());
+        AsyncLoadList asyncLoadList = new AsyncLoadList(this, getActivity());
+        asyncLoadList.execute();
         super.onResume();
     }
 
     private void bindFloatingActionButton() {
         fab = (FloatingActionButton) contactListFragmentView.findViewById(R.id.fab);
-        fab.setVisibility(View.INVISIBLE);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent goToContactForm = new Intent(getActivity(), ContactFormActivity.class);
-//                startActivity(goToContactForm);
-//            }
-//        });
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent goToContactForm = new Intent(getActivity(), ContactFormActivity.class);
+                startActivity(goToContactForm);
+            }
+        });
     }
 
     private void bindContactList() {
@@ -83,7 +83,7 @@ public class ContactFavoriteListFragment extends Fragment {
                         selectedContact = adapter.getItem(position);
                         Intent goToContactInfo = new Intent(getActivity(), ContactInformationActivity.class);
                         goToContactInfo.putExtra(ContactInformationActivity.PARAM_CONTACTINFO, selectedContact);
-                        startActivityForResult(goToContactInfo, ContactFavoriteListFragment.RESULTCONTACTINFO);
+                        startActivityForResult(goToContactInfo, ContactListFragment.RESULTCONTACTINFO);
                     }
 
                     @Override
@@ -99,91 +99,37 @@ public class ContactFavoriteListFragment extends Fragment {
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        getActivity().getMenuInflater().inflate(R.menu.context_menu_contact_list_favorites, menu);
+        getActivity().getMenuInflater().inflate(R.menu.context_menu_contact_list, menu);
         super.onCreateContextMenu(menu, v, menuInfo);
     }
 
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-
         if (getUserVisibleHint()) {
             int id = item.getItemId();
 
             if (id == R.id.context_menu_edit)
-                onMenuEditClick();
+                MenuHelper.onMenuEditClick(selectedContact,this.getActivity());
 
             else if (id == R.id.context_menu_delete)
-                onMenuDeleteClick();
+                MenuHelper.onMenuDeleteClick(selectedContact,this.getActivity());
 
             else if (id == R.id.context_menu_website)
-                onMenuWebSiteClick();
+                MenuHelper.onMenuWebSiteClick(selectedContact,this.getActivity());
 
             else if (id == R.id.context_menu_call)
-                onMenuCallClick();
-
-            else if (id == R.id.context_menu_remove_favorite)
-                    onMenuRemoveFavoriteClick();
-
+                MenuHelper.onMenuCallClick(selectedContact,this.getActivity());
+            else if (id == R.id.context_menu_favorite) {
+                MenuHelper.onMenuFavoriteClick(selectedContact,this.getActivity());
+            }
         }
         return super.onContextItemSelected(item);
     }
 
-    private void onMenuRemoveFavoriteClick() {
-        selectedContact.setIsFavorite(false);
-        AsyncSave save = new AsyncSave();
-        save.execute(selectedContact);
-        UpdatableViewPager activityWithViewPager = (UpdatableViewPager) getActivity();
-        activityWithViewPager.updateViewPager();
-    }
-
-    private void onMenuCallClick() {
-        Intent goToCallActivity = new Intent(Intent.ACTION_CALL);
-        goToCallActivity.setData(Uri.parse("tel:" + selectedContact.getTelephone()));
-
-        startActivity(goToCallActivity);
-    }
-
-    private void onMenuWebSiteClick() {
-        try {
-            String url = selectedContact.getWebSite();
-            if (!url.startsWith("https://") && !url.startsWith("http://"))
-                url = "http://" + url;
-            Intent goToWebSite = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            startActivity(goToWebSite);
-        } catch (Exception e) {
-            Toast.makeText(getActivity(), getString(R.string.msg_connection_failed), Toast.LENGTH_SHORT).show();
-        }
-
-    }
-
-    private void onMenuDeleteClick() {
 
 
-        new AlertDialog.Builder(getActivity())
-                .setMessage(getString(R.string.dialog_delete))
-                .setNeutralButton(getString(R.string.dialog_no), null)
-                .setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        ContactBusinessService.delete(selectedContact);
-                        contacts.remove(selectedContact);
-                        selectedContact = null;
-                        setAdapter();
-                    }
-                }).setTitle(getString(R.string.dialog_confirm)).create().show();
-
-    }
-
-
-    private void onMenuEditClick() {
-        Intent goToContactForm = new Intent(getActivity().getBaseContext(), ContactFormActivity.class);
-        goToContactForm.putExtra(ContactFormActivity.PARAM_CONTACT, selectedContact);
-
-        startActivity(goToContactForm);
-
-    }
-
+    @Override
     public void refreshList(List<Contact> contacts) {
         this.contacts = contacts;
         setAdapter();
@@ -196,12 +142,11 @@ public class ContactFavoriteListFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == ContactFavoriteListFragment.RESULTCONTACTINFO){
+        if(requestCode == ContactListFragment.RESULTCONTACTINFO){
             if(resultCode == getActivity().RESULT_OK){
                 UpdatableViewPager activityWithViewPager = (UpdatableViewPager) getActivity();
                 activityWithViewPager.updateViewPager();

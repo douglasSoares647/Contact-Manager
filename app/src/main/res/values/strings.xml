@@ -58,6 +58,9 @@
     <string name="menu_editable_item">editableItem</string>
     <string name="lbl_editable_item">Editable item2</string>
     <string name="menu_take_photo">Take photo</string>
+    <string name="title_activity_main_view">MainView</string>
+
+    <string name="action_settings">Settings</string>
 
 
 </resources>

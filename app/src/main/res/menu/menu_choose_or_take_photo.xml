@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:title="@string/menu_take_photo"
-        android:id="@+id/menu_take_photo">
+        android:id="@+id/menu_take_photo"
+        android:icon="@android:drawable/ic_menu_camera"
+        app:showAsAction="always|withText">
     </item>
 
 
     <item
-        android:title="Choose from gallery"
-        android:id="@+id/menu_choose_from_gallery">
+        android:title="Gallery"
+        android:id="@+id/menu_choose_from_gallery"
+        android:icon="@android:drawable/ic_menu_gallery"
+        app:showAsAction="always|withText">
     </item>
 </menu>

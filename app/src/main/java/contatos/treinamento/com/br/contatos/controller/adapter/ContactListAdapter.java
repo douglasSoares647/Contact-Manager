@@ -78,7 +78,10 @@ public class ContactListAdapter extends
         TextView textViewLastModified = viewHolder.textViewLastModified;
 
 
+        if(contact.getPhoto()!=null)
         BitmapHelper.loadImage(context,imageViewItemList,contact.getPhoto());
+        else
+            BitmapHelper.loadImage(context,imageViewItemList,contact.getContactColor());
 
 
 //        imageViewItemList.setOnClickListener(new View.OnClickListener() {

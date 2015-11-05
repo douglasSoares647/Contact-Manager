@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -20,7 +18,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.Toast;
 
 import java.io.File;
@@ -29,6 +26,7 @@ import java.util.Date;
 import java.util.Random;
 
 import contatos.treinamento.com.br.contatos.R;
+import contatos.treinamento.com.br.contatos.controller.activity.fragments.ContactListFragment;
 import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncSave;
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
 import contatos.treinamento.com.br.contatos.model.util.BitmapHelper;
@@ -47,7 +45,6 @@ public class ContactFormActivity extends AppCompatActivity {
     private ImageButton btnBirth;
     private ImageButton btnImportContact;
     private EditText editTextTelephone;
-    private RatingBar ratingBar;
     private Toolbar actionBar;
     private int color;
 
@@ -64,13 +61,21 @@ public class ContactFormActivity extends AppCompatActivity {
 
 
         initContact();
+        bindContactColor();
         bindActionBar();
         bindPhoto();
         bindEditTexts();
         bindBirth();
         bindBtnImportContact();
-        bindRatingBar();
         overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
+
+    }
+
+    private void bindContactColor() {
+        if(contact.getContactColor()==null) {
+            int[] arrayColors = getResources().getIntArray(R.array.androidcolors);
+            color = arrayColors[new Random().nextInt(arrayColors.length)];
+        }
 
     }
 
@@ -148,25 +153,16 @@ public class ContactFormActivity extends AppCompatActivity {
             this.contact = values.getParcelable(PARAM_CONTACT);
         } else
             contact = new Contact();
-
-        int[] arrayColors = getResources().getIntArray(R.array.androidcolors);
-        color = arrayColors[new Random().nextInt(arrayColors.length)];
     }
 
     private void bindContact() {
         contact.setName(editTextName.getText().toString());
         contact.setWebSite(editTextWebSite.getText().toString());
         contact.setBirth(FormHelper.convertStringToDate(editTextBirth.getText().toString()));
-        contact.setRating(ratingBar.getRating());
         contact.setTelephone(editTextTelephone.getText().toString());
         contact.setEmail(editTextEmail.getText().toString());
         contact.setLastDateModified(new Date());
-    }
-
-
-    private void bindRatingBar() {
-        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
-        ratingBar.setRating(contact.getRating() == null ? 0 : contact.getRating());
+        contact.setContactColor(String.valueOf(color));
     }
 
     private void bindEditTexts() {

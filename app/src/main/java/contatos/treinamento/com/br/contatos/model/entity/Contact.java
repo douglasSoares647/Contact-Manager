@@ -14,12 +14,11 @@ public class Contact implements Parcelable {
     private String name;
     private Date birth;
     private String webSite;
-    private Float rating;
     private String telephone;
     private String email;
     private Date lastDateModified;
     private boolean isFavorite;
-
+    private String contactColor;
 
 
 
@@ -58,14 +57,6 @@ public class Contact implements Parcelable {
 
     public void setWebSite(String webSite) {
         this.webSite = webSite;
-    }
-
-    public Float getRating() {
-        return rating;
-    }
-
-    public void setRating(Float rating) {
-        this.rating = rating;
     }
 
     public Long getId() {
@@ -108,6 +99,14 @@ public class Contact implements Parcelable {
         this.isFavorite = isFavorite;
     }
 
+    public String getContactColor() {
+        return contactColor;
+    }
+
+    public void setContactColor(String contactColor) {
+        this.contactColor = contactColor;
+    }
+
     public Contact() {
     }
 
@@ -123,11 +122,11 @@ public class Contact implements Parcelable {
         dest.writeString(this.name == null ? "" : this.name);
         dest.writeLong(birth != null ? birth.getTime() : -1);
         dest.writeString(this.webSite == null ? "" : this.webSite);
-        dest.writeFloat(this.rating == null ? 0 : this.rating);
         dest.writeString(this.telephone == null? "" : this.telephone);
         dest.writeString(this.email == null ? "" : this.email);
         dest.writeLong(lastDateModified == null ? -1 : lastDateModified.getTime());
         dest.writeByte(isFavorite ? (byte) 1 : (byte) 0);
+        dest.writeString(this.contactColor == null ? "" : this.contactColor);
     }
 
     protected Contact(Parcel in) {
@@ -137,13 +136,13 @@ public class Contact implements Parcelable {
         long tmpBirth = in.readLong();
         this.birth = tmpBirth == -1 ? null : new Date(tmpBirth);
         this.webSite = in.readString();
-        this.rating = in.readFloat();
         this.telephone = in.readString();
         this.email = in.readString();
         long tmpLastDateModified = in.readLong();
         this.lastDateModified = tmpLastDateModified == -1? null : new Date(tmpLastDateModified);
         byte tmpIsFavorite = in.readByte();
         this.isFavorite = tmpIsFavorite == 1? true : false;
+        this.contactColor = in.readString();
     }
 
     public static final Creator<Contact> CREATOR = new Creator<Contact>() {

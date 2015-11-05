@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="contatos.treinamento.com.br.contatos">
+    package="contatos.treinamento.com.br.contatos" >
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -12,11 +12,11 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <activity
             android:name=".controller.activity.MainView"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,7 +25,7 @@
         </activity>
         <activity
             android:name=".controller.activity.ContactInformationActivity"
-            android:parentActivityName=".controller.activity.MainView">
+            android:parentActivityName=".controller.activity.MainView" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".controller.activity.MainView" />
@@ -33,29 +33,25 @@
         <activity
             android:name=".controller.activity.ContactFormActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/bar_new_contact">
+            android:label="@string/bar_new_contact" >
             />
         </activity>
         <activity
             android:name=".controller.activity.ContactSearchActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:parentActivityName=".controller.activity.MainView">
+            android:parentActivityName=".controller.activity.MainView" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".controller.activity.MainView" />
         </activity>
-
-
         <activity
             android:name=".controller.activity.ContactPhotoActivity"
-
-            android:parentActivityName=".controller.activity.ContactInformationActivity">
+            android:parentActivityName=".controller.activity.ContactInformationActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:configChanges="orientation|keyboardHidden|screenSize"
-                android:value=".controller.activity.ContactInformationActivity"></meta-data>
+                android:value=".controller.activity.ContactInformationActivity" />
         </activity>
-
     </application>
 
 </manifest>

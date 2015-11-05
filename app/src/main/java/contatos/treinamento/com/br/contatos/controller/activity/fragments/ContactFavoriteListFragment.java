@@ -1,9 +1,8 @@
-package contatos.treinamento.com.br.contatos.controller.activity;
+package contatos.treinamento.com.br.contatos.controller.activity.fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,18 +21,19 @@ import android.widget.Toast;
 import java.util.List;
 
 import contatos.treinamento.com.br.contatos.R;
+import contatos.treinamento.com.br.contatos.controller.activity.ContactFormActivity;
+import contatos.treinamento.com.br.contatos.controller.activity.ContactInformationActivity;
 import contatos.treinamento.com.br.contatos.controller.adapter.ContactListAdapter;
-import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncInterface;
-import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncLoadList;
 import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncSave;
 import contatos.treinamento.com.br.contatos.controller.interfaces.UpdatableViewPager;
 import contatos.treinamento.com.br.contatos.controller.listener.RecyclerItemClickListener;
 import contatos.treinamento.com.br.contatos.model.ContactBusinessService;
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
 
-
-public class ContactListFragment extends Fragment implements AsyncInterface{
-
+/**
+ * Created by c1284521 on 28/10/2015.
+ */
+public class ContactFavoriteListFragment extends Fragment {
     private static final int RESULTCONTACTINFO = 20;
     private RecyclerView contactList;
     private Contact selectedContact;
@@ -41,9 +41,7 @@ public class ContactListFragment extends Fragment implements AsyncInterface{
     private List<Contact> contacts;
     private View contactListFragmentView;
 
-
-    public ContactListFragment() {
-    }
+    public ContactFavoriteListFragment(){};
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -57,20 +55,20 @@ public class ContactListFragment extends Fragment implements AsyncInterface{
 
     @Override
     public void onResume() {
-        AsyncLoadList asyncLoadList = new AsyncLoadList(this, getActivity());
-        asyncLoadList.execute();
+        refreshList(ContactBusinessService.loadFavorites());
         super.onResume();
     }
 
     private void bindFloatingActionButton() {
         fab = (FloatingActionButton) contactListFragmentView.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent goToContactForm = new Intent(getActivity(), ContactFormActivity.class);
-                startActivity(goToContactForm);
-            }
-        });
+        fab.setVisibility(View.INVISIBLE);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent goToContactForm = new Intent(getActivity(), ContactFormActivity.class);
+//                startActivity(goToContactForm);
+//            }
+//        });
     }
 
     private void bindContactList() {
@@ -87,7 +85,7 @@ public class ContactListFragment extends Fragment implements AsyncInterface{
                         selectedContact = adapter.getItem(position);
                         Intent goToContactInfo = new Intent(getActivity(), ContactInformationActivity.class);
                         goToContactInfo.putExtra(ContactInformationActivity.PARAM_CONTACTINFO, selectedContact);
-                        startActivityForResult(goToContactInfo, ContactListFragment.RESULTCONTACTINFO);
+                        startActivityForResult(goToContactInfo, ContactFavoriteListFragment.RESULTCONTACTINFO);
                     }
 
                     @Override
@@ -103,13 +101,14 @@ public class ContactListFragment extends Fragment implements AsyncInterface{
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        getActivity().getMenuInflater().inflate(R.menu.context_menu_contact_list, menu);
+        getActivity().getMenuInflater().inflate(R.menu.context_menu_contact_list_favorites, menu);
         super.onCreateContextMenu(menu, v, menuInfo);
     }
 
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+
         if (getUserVisibleHint()) {
             int id = item.getItemId();
 
@@ -124,17 +123,18 @@ public class ContactListFragment extends Fragment implements AsyncInterface{
 
             else if (id == R.id.context_menu_call)
                 onMenuCallClick();
-            else if (id == R.id.context_menu_favorite) {
-                onMenuFavoriteClick();
-            }
+
+            else if (id == R.id.context_menu_remove_favorite)
+                    onMenuRemoveFavoriteClick();
+
         }
         return super.onContextItemSelected(item);
     }
 
-    private void onMenuFavoriteClick() {
-        selectedContact.setIsFavorite(true);
-        ContactBusinessService.save(selectedContact);
-
+    private void onMenuRemoveFavoriteClick() {
+        selectedContact.setIsFavorite(false);
+        AsyncSave save = new AsyncSave();
+        save.execute(selectedContact);
         UpdatableViewPager activityWithViewPager = (UpdatableViewPager) getActivity();
         activityWithViewPager.updateViewPager();
     }
@@ -169,8 +169,9 @@ public class ContactListFragment extends Fragment implements AsyncInterface{
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         ContactBusinessService.delete(selectedContact);
-                        UpdatableViewPager updatableViewPager = (UpdatableViewPager) getActivity();
-                        updatableViewPager.updateViewPager();
+                        contacts.remove(selectedContact);
+                        selectedContact = null;
+                        setAdapter();
                     }
                 }).setTitle(getString(R.string.dialog_confirm)).create().show();
 
@@ -185,7 +186,6 @@ public class ContactListFragment extends Fragment implements AsyncInterface{
 
     }
 
-    @Override
     public void refreshList(List<Contact> contacts) {
         this.contacts = contacts;
         setAdapter();
@@ -198,11 +198,12 @@ public class ContactListFragment extends Fragment implements AsyncInterface{
         adapter.notifyDataSetChanged();
     }
 
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == ContactListFragment.RESULTCONTACTINFO){
+        if(requestCode == ContactFavoriteListFragment.RESULTCONTACTINFO){
             if(resultCode == getActivity().RESULT_OK){
                 UpdatableViewPager activityWithViewPager = (UpdatableViewPager) getActivity();
                 activityWithViewPager.updateViewPager();

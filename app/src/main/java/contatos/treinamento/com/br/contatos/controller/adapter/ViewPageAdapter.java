@@ -1,13 +1,11 @@
 package contatos.treinamento.com.br.contatos.controller.adapter;
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import contatos.treinamento.com.br.contatos.R;
-import contatos.treinamento.com.br.contatos.controller.activity.ContactFavoriteListFragment;
-import contatos.treinamento.com.br.contatos.controller.activity.ContactListFragment;
+import contatos.treinamento.com.br.contatos.controller.activity.fragments.ContactFavoriteListFragment;
+import contatos.treinamento.com.br.contatos.controller.activity.fragments.ContactListFragment;
 
 public class ViewPageAdapter extends FragmentStatePagerAdapter {
 

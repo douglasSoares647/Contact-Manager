@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
@@ -34,6 +36,7 @@ import contatos.treinamento.com.br.contatos.model.entity.Contact;
 import contatos.treinamento.com.br.contatos.model.util.BitmapHelper;
 import contatos.treinamento.com.br.contatos.model.util.CameraHelper;
 import contatos.treinamento.com.br.contatos.model.util.FormHelper;
+import contatos.treinamento.com.br.contatos.model.util.MenuHelper;
 
 /**
  * Created by c1284521 on 19/10/2015.
@@ -91,19 +94,29 @@ public class ContactInformationActivity extends AppCompatActivity {
         iconWebSite = (ImageView) findViewById(R.id.iconWebSite);
 
         Window window = getWindow();
-        if (!new File(contact.getPhoto()).exists()) {
-            window.setStatusBarColor(Integer.parseInt(contact.getPhoto()));
-            iconEmail.setColorFilter(Integer.parseInt(contact.getPhoto()));
-            iconTelephone.setColorFilter(Integer.parseInt(contact.getPhoto()));
-            iconBirth.setColorFilter(Integer.parseInt(contact.getPhoto()));
-            iconWebSite.setColorFilter(Integer.parseInt(contact.getPhoto()));
-        } else {
-            window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-            iconEmail.setColorFilter(getResources().getColor(R.color.colorPrimary));
-            iconTelephone.setColorFilter(getResources().getColor(R.color.colorPrimary));
-            iconBirth.setColorFilter(getResources().getColor(R.color.colorPrimary));
-            iconWebSite.setColorFilter(getResources().getColor(R.color.colorPrimary));
-        }
+        window.setStatusBarColor(Integer.parseInt(contact.getContactColor()));
+        iconEmail.setColorFilter(Integer.parseInt(contact.getContactColor()));
+        iconTelephone.setColorFilter(Integer.parseInt(contact.getContactColor()));
+        iconBirth.setColorFilter(Integer.parseInt(contact.getContactColor()));
+        iconWebSite.setColorFilter(Integer.parseInt(contact.getContactColor()));
+
+
+        iconTelephone.setClickable(true);
+        iconWebSite.setClickable(true);
+        iconTelephone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MenuHelper.onMenuCallClick(contact, ContactInformationActivity.this);
+            }
+        });
+
+        iconWebSite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MenuHelper.onMenuWebSiteClick(contact, ContactInformationActivity.this);
+            }
+        });
+
 
     }
 
@@ -184,6 +197,8 @@ public class ContactInformationActivity extends AppCompatActivity {
         actionBar.setTitle("");
         TextView title = (TextView) view.findViewById(R.id.toolbar_title);
         title.setText(contact.getName());
+        Typeface roboto = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
+        title.setTypeface(roboto);
         BitmapHelper.loadFullImage(this, photo, contact.getPhoto());
 
         setSupportActionBar(actionBar);
