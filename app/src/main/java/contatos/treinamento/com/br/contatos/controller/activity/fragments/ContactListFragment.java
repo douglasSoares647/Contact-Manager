@@ -1,5 +1,6 @@
 package contatos.treinamento.com.br.contatos.controller.activity.fragments;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,24 +14,28 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 
 import java.util.List;
 
 import contatos.treinamento.com.br.contatos.R;
 import contatos.treinamento.com.br.contatos.controller.activity.ContactFormActivity;
 import contatos.treinamento.com.br.contatos.controller.activity.ContactInformationActivity;
+import contatos.treinamento.com.br.contatos.controller.activity.ContactPhotoActivity;
 import contatos.treinamento.com.br.contatos.controller.adapter.ContactListAdapter;
 import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncInterface;
 import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncLoadList;
 import contatos.treinamento.com.br.contatos.controller.interfaces.UpdatableViewPager;
 import contatos.treinamento.com.br.contatos.controller.listener.RecyclerItemClickListener;
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
+import contatos.treinamento.com.br.contatos.model.util.BitmapHelper;
 import contatos.treinamento.com.br.contatos.model.util.MenuHelper;
 
 
 public class ContactListFragment extends Fragment implements AsyncInterface{
 
     private static final int RESULTCONTACTINFO = 20;
+    private static final int CODE_FROM_PHOTO_ACTIVITY = 2;
     private RecyclerView contactList;
     private Contact selectedContact;
     private FloatingActionButton fab;
@@ -79,11 +84,7 @@ public class ContactListFragment extends Fragment implements AsyncInterface{
                 new RecyclerItemClickListener(getActivity(), contactList, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        ContactListAdapter adapter = (ContactListAdapter) contactList.getAdapter();
-                        selectedContact = adapter.getItem(position);
-                        Intent goToContactInfo = new Intent(getActivity(), ContactInformationActivity.class);
-                        goToContactInfo.putExtra(ContactInformationActivity.PARAM_CONTACTINFO, selectedContact);
-                        startActivityForResult(goToContactInfo, ContactListFragment.RESULTCONTACTINFO);
+
                     }
 
                     @Override
@@ -137,7 +138,23 @@ public class ContactListFragment extends Fragment implements AsyncInterface{
 
 
     private void setAdapter() {
-        contactList.setAdapter(new ContactListAdapter(getActivity(), this.contacts));
+        contactList.setAdapter(new ContactListAdapter(getActivity(), this.contacts) {
+            @Override
+            public void onImageClick(Contact contact) {
+                selectedContact = contact;
+                Intent goToContactPhotoActivity = new Intent(getActivity(), ContactPhotoActivity.class);
+                goToContactPhotoActivity.putExtra(ContactPhotoActivity.PARAM_CONTACT, selectedContact);
+                startActivityForResult(goToContactPhotoActivity, CODE_FROM_PHOTO_ACTIVITY);
+            }
+
+            @Override
+            public void onInfoClick(Contact contact) {
+                selectedContact = contact;
+                Intent goToContactInfo = new Intent(getActivity(), ContactInformationActivity.class);
+                goToContactInfo.putExtra(ContactInformationActivity.PARAM_CONTACTINFO, selectedContact);
+                startActivityForResult(goToContactInfo, ContactListFragment.RESULTCONTACTINFO);
+            }
+        });
         ContactListAdapter adapter = (ContactListAdapter) contactList.getAdapter();
         adapter.notifyDataSetChanged();
     }
@@ -147,6 +164,13 @@ public class ContactListFragment extends Fragment implements AsyncInterface{
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == ContactListFragment.RESULTCONTACTINFO){
+            if(resultCode == getActivity().RESULT_OK){
+                UpdatableViewPager activityWithViewPager = (UpdatableViewPager) getActivity();
+                activityWithViewPager.updateViewPager();
+            }
+        }
+
+        if(requestCode == CODE_FROM_PHOTO_ACTIVITY){
             if(resultCode == getActivity().RESULT_OK){
                 UpdatableViewPager activityWithViewPager = (UpdatableViewPager) getActivity();
                 activityWithViewPager.updateViewPager();

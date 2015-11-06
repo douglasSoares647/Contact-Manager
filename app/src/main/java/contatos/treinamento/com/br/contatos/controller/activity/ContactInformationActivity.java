@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
@@ -74,7 +75,8 @@ public class ContactInformationActivity extends AppCompatActivity {
         initContact();
         refreshContact();
 
-        overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
+
+      overridePendingTransition(R.anim.animation_fade_in, R.anim.animation_fade_out);
     }
 
 
@@ -199,7 +201,11 @@ public class ContactInformationActivity extends AppCompatActivity {
         title.setText(contact.getName());
         Typeface roboto = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
         title.setTypeface(roboto);
+
+        if(contact.getPhoto()!=null)
         BitmapHelper.loadFullImage(this, photo, contact.getPhoto());
+        else
+            BitmapHelper.loadFullImage(this, photo, contact.getContactColor());
 
         setSupportActionBar(actionBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

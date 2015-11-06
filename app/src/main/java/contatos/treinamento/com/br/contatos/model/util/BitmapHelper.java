@@ -39,17 +39,24 @@ public final class BitmapHelper {
                     RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(context.getResources(), resource);
                     circularBitmapDrawable.setCircular(true);
                     photo.setImageDrawable(circularBitmapDrawable);
-                    photo.setColorFilter(null);
 
                 }
             });
         } else {
-                photo.setImageDrawable(context.getResources().getDrawable(R.mipmap.ic_person));
-                photo.setColorFilter(Integer.parseInt(path));
+            Glide.with(context).load(R.drawable.ic_person).asBitmap().centerCrop().into(new BitmapImageViewTarget(photo) {
+                protected void setResource(Bitmap resource) {
+                    //USANDO ROUNDEDBITMAPDRAWABLE A IMAGEM SERÁ MOSTRADA APENAS EM UM FORMATO CIRCULAR, PORÉM O IMAGEVIEW CONTINUA QUADRADO
+                    RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(context.getResources(), resource);
+                    circularBitmapDrawable.setCircular(true);
+                    circularBitmapDrawable.setColorFilter(Integer.parseInt(path), PorterDuff.Mode.OVERLAY);
+                    photo.setImageDrawable(circularBitmapDrawable);
 
+
+
+                }
+            });
         }
     }
-
 
     public static void loadFullImage(final Context context, final ImageView photo, final String path){
         if (new File(path).exists()) {
@@ -57,33 +64,11 @@ public final class BitmapHelper {
             photo.setColorFilter(null);
         } else {
             photo.setImageDrawable(context.getResources().getDrawable(R.mipmap.ic_person));
-            photo.setColorFilter(Integer.parseInt(path));
+            photo.setBackgroundColor(Integer.parseInt(path));
 
         }
     }
 
-    public static Bitmap getCircleBitmap(Bitmap bitmap) {
-        final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        final Canvas canvas = new Canvas(output);
-
-        final int color = Color.RED;
-        final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-        final RectF rectF = new RectF(rect);
-
-        paint.setAntiAlias(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(color);
-        canvas.drawOval(rectF, paint);
-
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, rect, rect, paint);
-
-        bitmap.recycle();
-
-        return output;
-    }
 
 
     public static void deleteRecursive(File path)

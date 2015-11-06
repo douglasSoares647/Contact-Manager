@@ -75,6 +75,7 @@ public class ContactFormActivity extends AppCompatActivity {
         if(contact.getContactColor()==null) {
             int[] arrayColors = getResources().getIntArray(R.array.androidcolors);
             color = arrayColors[new Random().nextInt(arrayColors.length)];
+            contact.setContactColor(String.valueOf(color));
         }
 
     }
@@ -162,7 +163,6 @@ public class ContactFormActivity extends AppCompatActivity {
         contact.setTelephone(editTextTelephone.getText().toString());
         contact.setEmail(editTextEmail.getText().toString());
         contact.setLastDateModified(new Date());
-        contact.setContactColor(String.valueOf(color));
     }
 
     private void bindEditTexts() {
@@ -199,11 +199,9 @@ public class ContactFormActivity extends AppCompatActivity {
 
         photo = (ImageView) findViewById(R.id.imageViewContact);
         if (contact.getPhoto() == null) {
-            contact.setPhoto(String.valueOf(color));
-            photo.setImageDrawable(getResources().getDrawable(R.mipmap.ic_person));
-            photo.setColorFilter(color);
+            BitmapHelper.loadImage(this, photo, contact.getContactColor());
         }
-        if (contact.getPhoto() != null)
+        else
             BitmapHelper.loadImage(this, photo, contact.getPhoto());
 
         photo.setOnClickListener(new View.OnClickListener() {

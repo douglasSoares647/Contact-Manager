@@ -14,7 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -36,7 +38,7 @@ import contatos.treinamento.com.br.contatos.model.util.FormHelper;
 /**
  * Created by c1284521 on 14/10/2015.
  */
-public class ContactListAdapter extends
+public abstract class ContactListAdapter extends
         RecyclerView.Adapter<ContactListAdapter.ViewHolder> {
 
     private List<Contact> contacts;
@@ -79,28 +81,9 @@ public class ContactListAdapter extends
 
 
         if(contact.getPhoto()!=null)
-        BitmapHelper.loadImage(context,imageViewItemList,contact.getPhoto());
+            BitmapHelper.loadImage(context,imageViewItemList,contact.getPhoto());
         else
             BitmapHelper.loadImage(context,imageViewItemList,contact.getContactColor());
-
-
-//        imageViewItemList.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Dialog dialog = new Dialog(context, R.style.CustomDialog);
-//                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//                dialog.menu
-//                ImageView imageBigger = (ImageView) dialog.findViewById(R.id.contact_image_bigger);
-//                TextView textViewContactNameOnDialog = (TextView) dialog.findViewById(R.id.textViewNameOnDialog);
-//                textViewContactNameOnDialog.setText(contact.getName());
-//                if (contact.getPhoto() != null)
-//                    BitmapHelper.loadImageBigger(imageBigger, contact.getPhoto());
-//                dialog.setCanceledOnTouchOutside(true);
-//                dialog.show();
-//
-//            }
-//        });
-
 
             textViewName.setText(contact.getName());
 
@@ -121,6 +104,25 @@ public class ContactListAdapter extends
                 textViewLastModified.setText(FormHelper.convertDateToString(contact.getLastDateModified()));
             }
 
+
+            viewHolder.relativeInfo.setClickable(true);
+            viewHolder.relativeInfo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onInfoClick(contact);
+
+                }
+            });
+
+
+        viewHolder.layoutImage.setClickable(true);
+        viewHolder.layoutImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    onImageClick(contact);
+            }
+        });
+
         }
 
 
@@ -138,7 +140,8 @@ public class ContactListAdapter extends
         public TextView textViewName;
         public ImageView photo;
         public TextView textViewLastModified;
-
+        public RelativeLayout relativeInfo;
+        public LinearLayout layoutImage;
         public ViewHolder(View itemView) {
             super(itemView);
             itemView.setClickable(true);
@@ -146,8 +149,15 @@ public class ContactListAdapter extends
             photo = (ImageView) itemView.findViewById(R.id.imageViewContactItemList);
             textViewLastModified = (TextView) itemView.findViewById(R.id.textViewLastModified);
 
+            relativeInfo = (RelativeLayout) itemView.findViewById(R.id.relativeInfo);
+            layoutImage = (LinearLayout) itemView.findViewById(R.id.layoutImage);
         }
     }
+
+
+
+    public abstract void onImageClick(Contact contact);
+    public abstract void onInfoClick(Contact contact);
 
 
 }

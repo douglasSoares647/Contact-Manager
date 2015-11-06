@@ -59,6 +59,8 @@ public class ContactPhotoActivity extends AppCompatActivity {
 
         bindActionBar();
         bindPhoto();
+
+        overridePendingTransition(R.anim.animation_fade_in, R.anim.animation_fade_out);
     }
 
     private void initContact() {

@@ -25,6 +25,7 @@ import contatos.treinamento.com.br.contatos.R;
 import contatos.treinamento.com.br.contatos.controller.adapter.ContactListAdapter;
 import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncInterface;
 import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncLoadList;
+import contatos.treinamento.com.br.contatos.controller.interfaces.UpdatableViewPager;
 import contatos.treinamento.com.br.contatos.controller.listener.RecyclerItemClickListener;
 import contatos.treinamento.com.br.contatos.model.ContactBusinessService;
 import contatos.treinamento.com.br.contatos.model.entity.Contact;
@@ -34,6 +35,7 @@ import contatos.treinamento.com.br.contatos.model.entity.Contact;
  */
 public class ContactSearchActivity extends AppCompatActivity implements AsyncInterface {
 
+    private static final int CODE_FROM_PHOTO_ACTIVITY = 2;
     private RecyclerView contactList;
     private Toolbar actionBar;
 
@@ -53,7 +55,7 @@ public class ContactSearchActivity extends AppCompatActivity implements AsyncInt
     }
 
     private void searchDatabase() {
-        AsyncLoadList asyncLoadList = new AsyncLoadList(this,this);
+        AsyncLoadList asyncLoadList = new AsyncLoadList(this, this);
         asyncLoadList.execute();
     }
 
@@ -67,7 +69,7 @@ public class ContactSearchActivity extends AppCompatActivity implements AsyncInt
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        switch (id){
+        switch (id) {
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
@@ -107,42 +109,37 @@ public class ContactSearchActivity extends AppCompatActivity implements AsyncInt
         contactList.setLayoutManager(new LinearLayoutManager(this));
         contactList.setItemAnimator(new DefaultItemAnimator());
 
-        contactList.addOnItemTouchListener(
-                new RecyclerItemClickListener(ContactSearchActivity.this, contactList, new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        ContactListAdapter adapter = (ContactListAdapter) contactList.getAdapter();
-                        selectedContact = adapter.getItem(position);
-
-                        Intent goToContactInfo = new Intent(ContactSearchActivity.this, ContactInformationActivity.class);
-                        goToContactInfo.putExtra(ContactInformationActivity.PARAM_CONTACTINFO, selectedContact);
-                        startActivity(goToContactInfo);
-                    }
-
-                    @Override
-                    public void onItemLongClick(View view, int position) {
-                        ContactListAdapter adapter = (ContactListAdapter) contactList.getAdapter();
-                        selectedContact = adapter.getItem(position);
-                    }
-                }
-                )
-        );
-
     }
 
 
-    private void updateListByName(String name){
+    private void updateListByName(String name) {
         List<Contact> contactsByName = new ArrayList<>();
-        for(Contact contactByName : contacts){
-            if(contactByName.getName().toLowerCase().startsWith(name.toLowerCase())){
+        for (Contact contactByName : contacts) {
+            if (contactByName.getName().toLowerCase().startsWith(name.toLowerCase())) {
                 contactsByName.add(contactByName);
             }
         }
         setAdapter(contactsByName);
     }
 
-    public void setAdapter(List<Contact>contacts){
-        contactList.setAdapter(new ContactListAdapter(this, contacts));
+    public void setAdapter(List<Contact> contacts) {
+        contactList.setAdapter(new ContactListAdapter(this, contacts) {
+            @Override
+            public void onImageClick(Contact contact) {
+                selectedContact = contact;
+                Intent goToContactPhotoActivity = new Intent(ContactSearchActivity.this, ContactPhotoActivity.class);
+                goToContactPhotoActivity.putExtra(ContactPhotoActivity.PARAM_CONTACT, selectedContact);
+                startActivity(goToContactPhotoActivity);
+            }
+
+            @Override
+            public void onInfoClick(Contact contact) {
+                selectedContact = contact;
+                Intent goToContactInfo = new Intent(ContactSearchActivity.this, ContactInformationActivity.class);
+                goToContactInfo.putExtra(ContactInformationActivity.PARAM_CONTACTINFO, selectedContact);
+                startActivity(goToContactInfo);
+            }
+        });
         ContactListAdapter adapter = (ContactListAdapter) contactList.getAdapter();
         adapter.notifyDataSetChanged();
     }
@@ -155,14 +152,15 @@ public class ContactSearchActivity extends AppCompatActivity implements AsyncInt
 
     @Override
     protected void onResume() {
-
         String name = editTextSearch.getText().toString();
-       if(!name.isEmpty())
-        updateListByName(name);
+        if (!name.isEmpty())
+            updateListByName(name);
         else
             searchDatabase();
         super.onResume();
 
     }
 
+
 }
+
