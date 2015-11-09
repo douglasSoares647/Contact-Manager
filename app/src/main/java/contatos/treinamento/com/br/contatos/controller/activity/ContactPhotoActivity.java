@@ -52,10 +52,10 @@ public class ContactPhotoActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_contact_photo);
 
-        if(savedInstanceState==null)
-        initContact();
+        if (savedInstanceState == null)
+            initContact();
         else
-        contact = savedInstanceState.getParcelable(ContactPhotoActivity.PARAM_CONTACT);
+            contact = savedInstanceState.getParcelable(ContactPhotoActivity.PARAM_CONTACT);
 
         bindActionBar();
         bindPhoto();
@@ -93,7 +93,7 @@ public class ContactPhotoActivity extends AppCompatActivity {
             case android.R.id.home:
                 AsyncSave save = new AsyncSave();
                 save.execute(contact);
-                Intent sendInfo = new Intent(this, ContactInformationActivity.class );
+                Intent sendInfo = new Intent(this, ContactInformationActivity.class);
                 sendInfo.putExtra(ContactPhotoActivity.PARAM_CONTACT, contact);
                 setResult(RESULT_OK, sendInfo);
                 finish();
@@ -103,7 +103,7 @@ public class ContactPhotoActivity extends AppCompatActivity {
     }
 
     private void onMenuChooseOptionClick() {
-        PopupMenu popupMenu = new PopupMenu(this,findViewById(R.id.menu_photo_take_photo));
+        PopupMenu popupMenu = new PopupMenu(this, findViewById(R.id.menu_photo_take_photo));
         popupMenu.inflate(R.menu.menu_choose_or_take_photo);
         popupMenu.show();
 
@@ -111,7 +111,7 @@ public class ContactPhotoActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 int id = menuItem.getItemId();
-                switch (id){
+                switch (id) {
                     case R.id.menu_choose_from_gallery:
                         onMenuChooseFromGalleryClick();
                         break;
@@ -130,7 +130,6 @@ public class ContactPhotoActivity extends AppCompatActivity {
     }
 
 
-
     private void onMenuChooseFromGalleryClick() {
         CameraHelper.choosePhotoFromGallery(ContactPhotoActivity.this);
     }
@@ -138,7 +137,11 @@ public class ContactPhotoActivity extends AppCompatActivity {
 
     private void bindPhoto() {
         photo = (ImageView) findViewById(R.id.imageViewContactPhoto);
-        BitmapHelper.loadFullImage(this, photo, contact.getPhoto());
+
+        if (contact.getPhoto()!= null)
+            BitmapHelper.loadFullImage(this, photo, contact.getPhoto());
+        else
+            BitmapHelper.loadFullImage(this, photo, contact.getContactColor());
 
     }
 
@@ -166,23 +169,21 @@ public class ContactPhotoActivity extends AppCompatActivity {
                 BitmapHelper.deleteRecursive(new File(contact.getPhoto()));
                 contact.setPhoto(pathPhoto);
                 contact.setLastDateModified(new Date());
-                BitmapHelper.loadFullImage(this,photo,contact.getPhoto());
-            }
-            else
+                BitmapHelper.loadFullImage(this, photo, contact.getPhoto());
+            } else
                 pathPhoto = null;
         }
 
-        if(requestCode == CameraHelper.GALLERY_RESULT_OK){
-            if(resultCode == RESULT_OK){
+        if (requestCode == CameraHelper.GALLERY_RESULT_OK) {
+            if (resultCode == RESULT_OK) {
                 Uri selectedImageUri = data.getData();
                 contact.setPhoto(getpathring(selectedImageUri));
-                BitmapHelper.loadFullImage(this,photo,contact.getPhoto());
+                BitmapHelper.loadFullImage(this, photo, contact.getPhoto());
 
             }
         }
 
     }
-
 
 
     @Override
@@ -194,7 +195,7 @@ public class ContactPhotoActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             contact = savedInstanceState.getParcelable(ContactPhotoActivity.PARAM_CONTACT);
         }
     }
@@ -203,7 +204,7 @@ public class ContactPhotoActivity extends AppCompatActivity {
     public void onBackPressed() {
         AsyncSave save = new AsyncSave();
         save.execute(contact);
-        Intent sendInfo = new Intent(this, ContactInformationActivity.class );
+        Intent sendInfo = new Intent(this, ContactInformationActivity.class);
         sendInfo.putExtra(ContactPhotoActivity.PARAM_CONTACT, contact);
         setResult(RESULT_OK, sendInfo);
 
@@ -211,13 +212,11 @@ public class ContactPhotoActivity extends AppCompatActivity {
     }
 
 
-
-
     private String getpathring(Uri selectedImageUri) {
         Cursor cursor = getContentResolver().query(selectedImageUri, null, null, null, null);
         cursor.moveToFirst();
         String document_id = cursor.getString(0);
-        document_id = document_id.substring(document_id.lastIndexOf(":")+1);
+        document_id = document_id.substring(document_id.lastIndexOf(":") + 1);
         cursor.close();
 
         cursor = getContentResolver().query(

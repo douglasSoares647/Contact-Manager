@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.LinearLayout;
 
 import java.util.List;
 
@@ -78,7 +79,6 @@ public class ContactListFragment extends Fragment implements AsyncInterface{
         contactList = (RecyclerView) contactListFragmentView.findViewById(R.id.listViewContacts);
         contactList.setLayoutManager(new LinearLayoutManager(getActivity()));
         contactList.setItemAnimator(new DefaultItemAnimator());
-        registerForContextMenu(contactList);
 
         contactList.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), contactList, new RecyclerItemClickListener.OnItemClickListener() {
@@ -139,6 +139,17 @@ public class ContactListFragment extends Fragment implements AsyncInterface{
 
     private void setAdapter() {
         contactList.setAdapter(new ContactListAdapter(getActivity(), this.contacts) {
+
+            @Override
+            public void onImageLongClick(Contact contact) {
+                selectedContact = contact;
+            }
+
+            @Override
+            public void onInfoLongClick(Contact contact) {
+                selectedContact = contact;
+            }
+
             @Override
             public void onImageClick(Contact contact) {
                 selectedContact = contact;

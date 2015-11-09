@@ -119,10 +119,27 @@ public abstract class ContactListAdapter extends
         viewHolder.layoutImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    onImageClick(contact);
+                onImageClick(contact);
             }
         });
 
+
+        viewHolder.layoutImage.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                onImageLongClick(contact);
+                return true;
+            }
+        });
+
+
+        viewHolder.relativeInfo.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                onInfoLongClick(contact);
+                return true;
+            }
+        });
         }
 
 
@@ -134,7 +151,6 @@ public abstract class ContactListAdapter extends
     public int getItemCount() {
         return contacts.size();
     }
-
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView textViewName;
@@ -154,8 +170,8 @@ public abstract class ContactListAdapter extends
         }
     }
 
-
-
+    public abstract void onImageLongClick(Contact contact);
+    public abstract void onInfoLongClick(Contact contact);
     public abstract void onImageClick(Contact contact);
     public abstract void onInfoClick(Contact contact);
 

@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.List;
@@ -194,6 +195,16 @@ public class ContactFavoriteListFragment extends Fragment {
 
     private void setAdapter() {
         contactList.setAdapter(new ContactListAdapter(getActivity(), this.contacts) {
+            @Override
+            public void onImageLongClick(Contact contact) {
+
+            }
+
+            @Override
+            public void onInfoLongClick(Contact contact) {
+
+            }
+
             @Override
             public void onImageClick(Contact contact) {
 

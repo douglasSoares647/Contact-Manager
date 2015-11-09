@@ -29,6 +29,7 @@ public final class FormHelper {
         Date convertedDate = new Date();
         try {
             convertedDate = dateFormat.parse(date);
+
         } catch (Exception e) {
             Log.i("ERRO", "ERRO AO CONVERTER STRING PARA DATA");
         }

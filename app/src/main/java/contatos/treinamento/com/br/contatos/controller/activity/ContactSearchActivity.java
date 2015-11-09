@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -124,6 +125,17 @@ public class ContactSearchActivity extends AppCompatActivity implements AsyncInt
 
     public void setAdapter(List<Contact> contacts) {
         contactList.setAdapter(new ContactListAdapter(this, contacts) {
+
+            @Override
+            public void onImageLongClick(Contact contact) {
+
+            }
+
+            @Override
+            public void onInfoLongClick(Contact contact) {
+
+            }
+
             @Override
             public void onImageClick(Contact contact) {
                 selectedContact = contact;

@@ -85,7 +85,7 @@ public class ContactInformationActivity extends AppCompatActivity {
         if (contact.getBirth() != null)
             textViewBirth.setText(FormHelper.convertDateToString(contact.getBirth()));
         else
-            textViewBirth.setText("");
+            textViewBirth.setText(getString(R.string.lbl_no_birth_registered));
 
     }
 
@@ -105,9 +105,11 @@ public class ContactInformationActivity extends AppCompatActivity {
 
         iconTelephone.setClickable(true);
         iconWebSite.setClickable(true);
+
         iconTelephone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(!contact.getTelephone().isEmpty())
                 MenuHelper.onMenuCallClick(contact, ContactInformationActivity.this);
             }
         });
@@ -115,6 +117,7 @@ public class ContactInformationActivity extends AppCompatActivity {
         iconWebSite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(!contact.getWebSite().isEmpty())
                 MenuHelper.onMenuWebSiteClick(contact, ContactInformationActivity.this);
             }
         });
@@ -225,11 +228,14 @@ public class ContactInformationActivity extends AppCompatActivity {
     private void bindTextViewWebSite() {
         textViewWebSite = (TextView) findViewById(R.id.textViewContactInfoWebSite);
         textViewWebSite.setText(contact.getWebSite() == null ? "" : contact.getWebSite());
+        if(contact.getWebSite().isEmpty()){
+            textViewWebSite.setText(getString(R.string.lbl_no_web_registered));
+        }
     }
 
     private void bindTextViewTelephone() {
         textViewTelephone = (TextView) findViewById(R.id.textViewContactInfoTelephone);
-        textViewTelephone.setText(contact.getTelephone() == null ? "" : contact.getTelephone());
+        textViewTelephone.setText(contact.getTelephone() == null ? getString(R.string.lbl_no_telephone_registered) : contact.getTelephone());
     }
 
 

@@ -82,7 +82,7 @@ public class ContactFormActivity extends AppCompatActivity {
 
     private void bindBtnImportContact() {
         btnImportContact = (ImageButton) findViewById(R.id.imageButtonImportContact);
-        btnImportContact.setColorFilter(color);
+        btnImportContact.setColorFilter(Integer.parseInt(contact.getContactColor()));
         btnImportContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,7 +114,7 @@ public class ContactFormActivity extends AppCompatActivity {
         });
         editTextBirth.setLongClickable(false);
         btnBirth = (ImageButton) findViewById(R.id.btnBirth);
-        btnBirth.setColorFilter(color);
+        btnBirth.setColorFilter(Integer.parseInt(contact.getContactColor()));
     }
 
 
@@ -130,7 +130,7 @@ public class ContactFormActivity extends AppCompatActivity {
         setSupportActionBar(actionBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        actionBar.setBackgroundColor(color);
+        actionBar.setBackgroundColor(Integer.parseInt(contact.getContactColor()));
 
         setStatusBarColor();
 
@@ -140,7 +140,7 @@ public class ContactFormActivity extends AppCompatActivity {
         Window window = getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(color);
+        window.setStatusBarColor(Integer.parseInt(contact.getContactColor())    );
     }
 
 

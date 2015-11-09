@@ -61,6 +61,9 @@
     <string name="title_activity_main_view">MainView</string>
 
     <string name="action_settings">Settings</string>
+    <string name="lbl_no_web_registered">No Website registered</string>
+    <string name="lbl_no_telephone_registered">No telephone registered</string>
+    <string name="lbl_no_birth_registered">No birth registered</string>
 
 
 </resources>
