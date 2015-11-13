@@ -124,34 +124,34 @@ public class ContactSearchActivity extends AppCompatActivity implements AsyncInt
     }
 
     public void setAdapter(List<Contact> contacts) {
-        contactList.setAdapter(new ContactListAdapter(this, contacts) {
-
-            @Override
-            public void onImageLongClick(Contact contact) {
-
-            }
-
-            @Override
-            public void onInfoLongClick(Contact contact) {
-
-            }
-
-            @Override
-            public void onImageClick(Contact contact) {
-                selectedContact = contact;
-                Intent goToContactPhotoActivity = new Intent(ContactSearchActivity.this, ContactPhotoActivity.class);
-                goToContactPhotoActivity.putExtra(ContactPhotoActivity.PARAM_CONTACT, selectedContact);
-                startActivity(goToContactPhotoActivity);
-            }
-
-            @Override
-            public void onInfoClick(Contact contact) {
-                selectedContact = contact;
-                Intent goToContactInfo = new Intent(ContactSearchActivity.this, ContactInformationActivity.class);
-                goToContactInfo.putExtra(ContactInformationActivity.PARAM_CONTACTINFO, selectedContact);
-                startActivity(goToContactInfo);
-            }
-        });
+        contactList.setAdapter(new ContactListAdapter(this, contacts));
+//
+//            @Override
+//            public void onImageLongClick(Contact contact) {
+//
+//            }
+//
+//            @Override
+//            public void onInfoLongClick(Contact contact) {
+//
+//            }
+//
+//            @Override
+//            public void onImageClick(Contact contact) {
+//                selectedContact = contact;
+//                Intent goToContactPhotoActivity = new Intent(ContactSearchActivity.this, ContactPhotoActivity.class);
+//                goToContactPhotoActivity.putExtra(ContactPhotoActivity.PARAM_CONTACT, selectedContact);
+//                startActivity(goToContactPhotoActivity);
+//            }
+//
+//            @Override
+//            public void onInfoClick(Contact contact) {
+//                selectedContact = contact;
+//                Intent goToContactInfo = new Intent(ContactSearchActivity.this, ContactInformationActivity.class);
+//                goToContactInfo.putExtra(ContactInformationActivity.PARAM_CONTACTINFO, selectedContact);
+//                startActivity(goToContactInfo);
+//            }
+//        });
         ContactListAdapter adapter = (ContactListAdapter) contactList.getAdapter();
         adapter.notifyDataSetChanged();
     }

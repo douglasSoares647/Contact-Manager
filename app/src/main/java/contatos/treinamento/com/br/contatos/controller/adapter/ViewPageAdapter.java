@@ -4,14 +4,19 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import contatos.treinamento.com.br.contatos.R;
 import contatos.treinamento.com.br.contatos.controller.activity.fragments.ContactFavoriteListFragment;
 import contatos.treinamento.com.br.contatos.controller.activity.fragments.ContactListFragment;
 
 public class ViewPageAdapter extends FragmentStatePagerAdapter {
 
-    CharSequence Titles[];
-    int NumbOfTabs;
-    FragmentManager fm;
+    private CharSequence Titles[];
+    private int NumbOfTabs;
+    private FragmentManager fm;
+    private static int[] ICONS = new int[] {
+            R.drawable.ic_action_list,
+            R.drawable.ic_toggle_star
+    };
 
     public ViewPageAdapter(FragmentManager fm, CharSequence mTitles[], int mNumbOfTabsumb) {
         super(fm);
@@ -51,5 +56,10 @@ public class ViewPageAdapter extends FragmentStatePagerAdapter {
     @Override
     public int getCount() {
         return NumbOfTabs;
+    }
+
+
+    public int getDrawableId(int position){
+        return ICONS[position];
     }
 }

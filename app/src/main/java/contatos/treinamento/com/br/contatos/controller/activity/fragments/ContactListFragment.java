@@ -33,7 +33,7 @@ import contatos.treinamento.com.br.contatos.model.util.BitmapHelper;
 import contatos.treinamento.com.br.contatos.model.util.MenuHelper;
 
 
-public class ContactListFragment extends Fragment implements AsyncInterface{
+public class ContactListFragment extends Fragment implements AsyncInterface {
 
     private static final int RESULTCONTACTINFO = 20;
     private static final int CODE_FROM_PHOTO_ACTIVITY = 2;
@@ -84,7 +84,11 @@ public class ContactListFragment extends Fragment implements AsyncInterface{
                 new RecyclerItemClickListener(getActivity(), contactList, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-
+                        ContactListAdapter adapter = (ContactListAdapter) contactList.getAdapter();
+                        selectedContact = adapter.getItem(position);
+                        Intent goToContactInfo = new Intent(getActivity(), ContactInformationActivity.class);
+                        goToContactInfo.putExtra(ContactInformationActivity.PARAM_CONTACTINFO, selectedContact);
+                        startActivityForResult(goToContactInfo, ContactListFragment.RESULTCONTACTINFO);
                     }
 
                     @Override
@@ -111,23 +115,22 @@ public class ContactListFragment extends Fragment implements AsyncInterface{
             int id = item.getItemId();
 
             if (id == R.id.context_menu_edit)
-                MenuHelper.onMenuEditClick(selectedContact,this.getActivity());
+                MenuHelper.onMenuEditClick(selectedContact, this.getActivity());
 
             else if (id == R.id.context_menu_delete)
-                MenuHelper.onMenuDeleteClick(selectedContact,this.getActivity());
+                MenuHelper.onMenuDeleteClick(selectedContact, this.getActivity());
 
             else if (id == R.id.context_menu_website)
-                MenuHelper.onMenuWebSiteClick(selectedContact,this.getActivity());
+                MenuHelper.onMenuWebSiteClick(selectedContact, this.getActivity());
 
             else if (id == R.id.context_menu_call)
-                MenuHelper.onMenuCallClick(selectedContact,this.getActivity());
+                MenuHelper.onMenuCallClick(selectedContact, this.getActivity());
             else if (id == R.id.context_menu_favorite) {
-                MenuHelper.onMenuFavoriteClick(selectedContact,this.getActivity());
+                MenuHelper.onMenuFavoriteClick(selectedContact, this.getActivity());
             }
         }
         return super.onContextItemSelected(item);
     }
-
 
 
     @Override
@@ -138,54 +141,56 @@ public class ContactListFragment extends Fragment implements AsyncInterface{
 
 
     private void setAdapter() {
-        contactList.setAdapter(new ContactListAdapter(getActivity(), this.contacts) {
-
-            @Override
-            public void onImageLongClick(Contact contact) {
-                selectedContact = contact;
-            }
-
-            @Override
-            public void onInfoLongClick(Contact contact) {
-                selectedContact = contact;
-            }
-
-            @Override
-            public void onImageClick(Contact contact) {
-                selectedContact = contact;
-                Intent goToContactPhotoActivity = new Intent(getActivity(), ContactPhotoActivity.class);
-                goToContactPhotoActivity.putExtra(ContactPhotoActivity.PARAM_CONTACT, selectedContact);
-                startActivityForResult(goToContactPhotoActivity, CODE_FROM_PHOTO_ACTIVITY);
-            }
-
-            @Override
-            public void onInfoClick(Contact contact) {
-                selectedContact = contact;
-                Intent goToContactInfo = new Intent(getActivity(), ContactInformationActivity.class);
-                goToContactInfo.putExtra(ContactInformationActivity.PARAM_CONTACTINFO, selectedContact);
-                startActivityForResult(goToContactInfo, ContactListFragment.RESULTCONTACTINFO);
-            }
-        });
-        ContactListAdapter adapter = (ContactListAdapter) contactList.getAdapter();
-        adapter.notifyDataSetChanged();
+        contactList.setAdapter(new ContactListAdapter(getActivity(), this.contacts));
+//
+//            @Override
+//            public void onImageLongClick(Contact contact) {
+//                selectedContact = contact;
+//            }
+//
+//            @Override
+//            public void onInfoLongClick(Contact contact) {
+//                selectedContact = contact;
+//            }
+//
+//            @Override
+//            public void onImageClick(Contact contact) {
+//                selectedContact = contact;
+//                Intent goToContactPhotoActivity = new Intent(getActivity(), ContactPhotoActivity.class);
+//                goToContactPhotoActivity.putExtra(ContactPhotoActivity.PARAM_CONTACT, selectedContact);
+//                startActivityForResult(goToContactPhotoActivity, CODE_FROM_PHOTO_ACTIVITY);
+//            }
+//
+//            @Override
+//            public void onInfoClick(Contact contact) {
+//                selectedContact = contact;
+//                Intent goToContactInfo = new Intent(getActivity(), ContactInformationActivity.class);
+//                goToContactInfo.putExtra(ContactInformationActivity.PARAM_CONTACTINFO, selectedContact);
+//                startActivityForResult(goToContactInfo, ContactListFragment.RESULTCONTACTINFO);
+//            }
+//        });
+//        ContactListAdapter adapter = (ContactListAdapter) contactList.getAdapter();
+//        adapter.notifyDataSetChanged();
+//    }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == ContactListFragment.RESULTCONTACTINFO){
-            if(resultCode == getActivity().RESULT_OK){
+        if (requestCode == ContactListFragment.RESULTCONTACTINFO) {
+            if (resultCode == getActivity().RESULT_OK) {
                 UpdatableViewPager activityWithViewPager = (UpdatableViewPager) getActivity();
                 activityWithViewPager.updateViewPager();
             }
         }
 
-        if(requestCode == CODE_FROM_PHOTO_ACTIVITY){
-            if(resultCode == getActivity().RESULT_OK){
+        if (requestCode == CODE_FROM_PHOTO_ACTIVITY) {
+            if (resultCode == getActivity().RESULT_OK) {
                 UpdatableViewPager activityWithViewPager = (UpdatableViewPager) getActivity();
                 activityWithViewPager.updateViewPager();
             }
         }
     }
 }
+

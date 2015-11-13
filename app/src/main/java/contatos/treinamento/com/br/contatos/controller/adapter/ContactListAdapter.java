@@ -38,7 +38,7 @@ import contatos.treinamento.com.br.contatos.model.util.FormHelper;
 /**
  * Created by c1284521 on 14/10/2015.
  */
-public abstract class ContactListAdapter extends
+public class ContactListAdapter extends
         RecyclerView.Adapter<ContactListAdapter.ViewHolder> {
 
     private List<Contact> contacts;
@@ -105,41 +105,41 @@ public abstract class ContactListAdapter extends
             }
 
 
-            viewHolder.relativeInfo.setClickable(true);
-            viewHolder.relativeInfo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onInfoClick(contact);
-
-                }
-            });
-
-
-        viewHolder.layoutImage.setClickable(true);
-        viewHolder.layoutImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onImageClick(contact);
-            }
-        });
-
-
-        viewHolder.layoutImage.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                onImageLongClick(contact);
-                return true;
-            }
-        });
-
-
-        viewHolder.relativeInfo.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                onInfoLongClick(contact);
-                return true;
-            }
-        });
+//            viewHolder.relativeInfo.setClickable(true);
+//            viewHolder.relativeInfo.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    onInfoClick(contact);
+//
+//                }
+//            });
+//
+//
+//        viewHolder.layoutImage.setClickable(true);
+//        viewHolder.layoutImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                onImageClick(contact);
+//            }
+//        });
+//
+//
+//        viewHolder.layoutImage.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View view) {
+//                onImageLongClick(contact);
+//                return true;
+//            }
+//        });
+//
+//
+//        viewHolder.relativeInfo.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View view) {
+//                onInfoLongClick(contact);
+//                return true;
+//            }
+//        });
         }
 
 
@@ -170,10 +170,10 @@ public abstract class ContactListAdapter extends
         }
     }
 
-    public abstract void onImageLongClick(Contact contact);
-    public abstract void onInfoLongClick(Contact contact);
-    public abstract void onImageClick(Contact contact);
-    public abstract void onInfoClick(Contact contact);
+//    public abstract void onImageLongClick(Contact contact);
+//    public abstract void onInfoLongClick(Contact contact);
+//    public abstract void onImageClick(Contact contact);
+//    public abstract void onInfoClick(Contact contact);
 
 
 }

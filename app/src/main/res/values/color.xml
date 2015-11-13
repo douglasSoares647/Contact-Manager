@@ -6,6 +6,7 @@
     <color name="accent">#FF5722</color>
     <color name="colorActionBarSearch">#FFFFFFFF</color>
     <color name="slidingTabBar">#FFFFFF</color>
+    <color name="colorControlHighlight">#B6B6B6</color>
 
     <color name="toolbar_contact_photo_color">#000</color>
 

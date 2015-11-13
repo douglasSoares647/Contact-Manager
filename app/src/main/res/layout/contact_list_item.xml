@@ -4,6 +4,8 @@
     xmlns:app="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="80dp"
+    android:clickable="true"
+    android:background="@drawable/custom_click"
     android:layout_marginBottom="15dp">
 
 
@@ -22,7 +24,8 @@
             android:layout_height="70dp"
             android:src="@drawable/ic_person"
             android:scaleType="fitXY"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="7dp" />
 
 
     </LinearLayout>

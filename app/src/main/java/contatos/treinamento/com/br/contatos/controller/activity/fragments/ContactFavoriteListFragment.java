@@ -194,27 +194,27 @@ public class ContactFavoriteListFragment extends Fragment {
 
 
     private void setAdapter() {
-        contactList.setAdapter(new ContactListAdapter(getActivity(), this.contacts) {
-            @Override
-            public void onImageLongClick(Contact contact) {
-
-            }
-
-            @Override
-            public void onInfoLongClick(Contact contact) {
-
-            }
-
-            @Override
-            public void onImageClick(Contact contact) {
-
-            }
-
-            @Override
-            public void onInfoClick(Contact contact) {
-
-            }
-        });
+        contactList.setAdapter(new ContactListAdapter(getActivity(), this.contacts));
+//            @Override
+//            public void onImageLongClick(Contact contact) {
+//
+//            }
+//
+//            @Override
+//            public void onInfoLongClick(Contact contact) {
+//
+//            }
+//
+//            @Override
+//            public void onImageClick(Contact contact) {
+//
+//            }
+//
+//            @Override
+//            public void onInfoClick(Contact contact) {
+//
+//            }
+//        });
         ContactListAdapter adapter = (ContactListAdapter) contactList.getAdapter();
         adapter.notifyDataSetChanged();
     }
