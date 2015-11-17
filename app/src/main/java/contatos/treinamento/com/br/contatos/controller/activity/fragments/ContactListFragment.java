@@ -79,6 +79,7 @@ public class ContactListFragment extends Fragment implements AsyncInterface {
         contactList = (RecyclerView) contactListFragmentView.findViewById(R.id.listViewContacts);
         contactList.setLayoutManager(new LinearLayoutManager(getActivity()));
         contactList.setItemAnimator(new DefaultItemAnimator());
+        registerForContextMenu(contactList);
 
         contactList.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), contactList, new RecyclerItemClickListener.OnItemClickListener() {

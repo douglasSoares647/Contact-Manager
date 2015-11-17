@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import contatos.treinamento.com.br.contatos.R;
 import contatos.treinamento.com.br.contatos.controller.activity.fragments.ContactFavoriteListFragment;
 import contatos.treinamento.com.br.contatos.controller.activity.fragments.ContactListFragment;
+import contatos.treinamento.com.br.contatos.controller.activity.fragments.RecentlyContactActivity;
 
 public class ViewPageAdapter extends FragmentStatePagerAdapter {
 
@@ -15,7 +16,7 @@ public class ViewPageAdapter extends FragmentStatePagerAdapter {
     private FragmentManager fm;
     private static int[] ICONS = new int[] {
             R.drawable.ic_action_list,
-            R.drawable.ic_toggle_star
+            R.drawable.ic_toggle_star,
     };
 
     public ViewPageAdapter(FragmentManager fm, CharSequence mTitles[], int mNumbOfTabsumb) {
@@ -33,10 +34,14 @@ public class ViewPageAdapter extends FragmentStatePagerAdapter {
         {
             ContactListFragment tab1 = new ContactListFragment();
             return tab1;
-        } else
+        } else if(position ==1)
         {
             ContactFavoriteListFragment tab2 = new ContactFavoriteListFragment();
             return tab2;
+        }
+        else {
+            RecentlyContactActivity tab3 = new RecentlyContactActivity();
+            return tab3;
         }
 
 

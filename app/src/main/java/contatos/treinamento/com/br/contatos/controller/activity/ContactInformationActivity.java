@@ -28,6 +28,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import java.io.File;
 import java.text.Normalizer;
+import java.util.Date;
 
 import contatos.treinamento.com.br.contatos.R;
 import contatos.treinamento.com.br.contatos.controller.asynctask.AsyncSave;
@@ -166,6 +167,7 @@ public class ContactInformationActivity extends AppCompatActivity {
         } else if (id == R.id.menu_info_add_favorite) {
             item.setChecked(!item.isChecked());
             contact.setIsFavorite(item.isChecked());
+            contact.setLastDateModified(new Date());
             item.setIcon(item.isChecked() ? R.mipmap.ic_filled_star : R.mipmap.ic_empty_star);
             return true;
         }

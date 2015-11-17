@@ -152,25 +152,25 @@ public class SlidingTabLayout extends HorizontalScrollView {
      * Create a default view to be used for tabs. This is called if a custom tab view is not set via
      * {@link #setCustomTabView(int, int)}.
      */
-//    protected ImageView createDefaultTabView(Context context) {
-//        ImageView textView = new ImageView(context);
-//        textView.setGravity(Gravity.CENTER);
-//        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, TAB_VIEW_TEXT_SIZE_SP);
-//        textView.setTypeface(Typeface.DEFAULT_BOLD);
-//        textView.setLayoutParams(new LinearLayout.LayoutParams(
-//                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-//
-//        TypedValue outValue = new TypedValue();
-//        getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground,
-//                outValue, true);
-//        textView.setBackgroundResource(outValue.resourceId);
-//        textView.setAllCaps(true);
-//
-//        int padding = (int) (TAB_VIEW_PADDING_DIPS * getResources().getDisplayMetrics().density);
-//        textView.setPadding(padding, padding, padding, padding);
-//
-//        return textView;
-//    }
+    protected TextView createDefaultTabView(Context context) {
+        TextView textView = new TextView(context);
+        textView.setGravity(Gravity.CENTER);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, TAB_VIEW_TEXT_SIZE_SP);
+        textView.setTypeface(Typeface.DEFAULT_BOLD);
+        textView.setLayoutParams(new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        TypedValue outValue = new TypedValue();
+        getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground,
+                outValue, true);
+        textView.setBackgroundResource(outValue.resourceId);
+        textView.setAllCaps(true);
+
+        int padding = (int) (TAB_VIEW_PADDING_DIPS * getResources().getDisplayMetrics().density);
+        textView.setPadding(padding, padding, padding, padding);
+
+        return textView;
+    }
 
     private void populateTabStrip() {
         final ViewPageAdapter adapter = (ViewPageAdapter) mViewPager.getAdapter();
@@ -178,36 +178,35 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
         for (int i = 0; i < adapter.getCount(); i++) {
             View tabView = null;
-            ImageView tabIconView = null;
+            TextView tabTextView = null;
 
-//            if (mTabViewLayoutId != 0) {
-//                // If there is a custom tab view layout id set, try and inflate it
-//                tabView = LayoutInflater.from(getContext()).inflate(mTabViewLayoutId, mTabStrip,
-//                        false);
-//                tabTitleView = (ImageView) tabView.findViewById(mTabViewTextViewId);
-//            }
+            if (mTabViewLayoutId != 0) {
+                // If there is a custom tab view layout id set, try and inflate it
+                tabView = LayoutInflater.from(getContext()).inflate(mTabViewLayoutId, mTabStrip,
+                        false);
+                tabTextView = (TextView) tabView.findViewById(mTabViewTextViewId);
+            }
 
             if (tabView == null) {
-                tabView = createDefaultImageView(getContext());
+                tabView = createDefaultTabView(getContext());
             }
 
-            if (tabIconView == null && ImageView.class.isInstance(tabView)) {
-                tabIconView = (ImageView) tabView;
+            if (tabTextView == null && TextView.class.isInstance(tabView)) {
+                tabTextView = (TextView) tabView;
             }
 
-//            if (mDistributeEvenly) {
-//                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) tabView.getLayoutParams();
-//                lp.width = 0;
-//                lp.weight = 1;
-//            }
+            if (mDistributeEvenly) {
+                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) tabView.getLayoutParams();
+                lp.width = 0;
+                lp.weight = 1;
+            }
 
-            tabIconView.setImageDrawable(getResources().getDrawable(adapter.getDrawableId(i)));
-            tabIconView.setColorFilter(getResources().getColor(R.color.slidingTabBar));
+            tabTextView.setText(adapter.getPageTitle(i));
             tabView.setOnClickListener(tabClickListener);
-//            String desc = mContentDescriptions.get(i, null);
-//            if (desc != null) {
-//                tabView.setContentDescription(desc);
-//            }
+            String desc = mContentDescriptions.get(i, null);
+            if (desc != null) {
+                tabView.setContentDescription(desc);
+            }
 
             mTabStrip.addView(tabView);
             if (i == mViewPager.getCurrentItem()) {

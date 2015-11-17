@@ -38,8 +38,8 @@ public class MainView extends AppCompatActivity implements UpdatableViewPager{
     }
 
     private void bindViewPageAdapter() {
-        CharSequence[] charSequences = {"Contact List","Favorites"};
-        adapter = new ViewPageAdapter(getSupportFragmentManager(),charSequences, 2);
+        CharSequence[] charSequences = {"Contact List","Favorites","Recent"};
+        adapter = new ViewPageAdapter(getSupportFragmentManager(),charSequences, 3);
 
         viewPager = (ViewPager) findViewById(R.id.pager);
         viewPager.setAdapter(adapter);
